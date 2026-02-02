@@ -3,80 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Rumah Pompa Pro</title>
+    <title>Kalkulator Pro: Submersible & Dry Pump</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; padding: 20px; background: #f4f4f4; }
-        .container { max-width: 600px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: auto; }
-        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #f4f7f6; color: #333; }
+        .container { max-width: 900px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin: auto; }
+        h2 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; text-align: center; }
+        .tabs { display: flex; justify-content: center; margin-bottom: 25px; gap: 10px; }
+        .tab { padding: 12px 25px; cursor: pointer; border: 2px solid #3498db; background: white; color: #3498db; font-weight: bold; border-radius: 50px; transition: 0.3s; }
+        .tab.active { background: #3498db; color: white; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         .input-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; }
-        input { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; }
-        .result { background: #e8f4fd; padding: 15px; border-radius: 5px; margin-top: 20px; }
-        .warning { color: #721c24; background: #f8d7da; padding: 10px; border-radius: 5px; margin-top: 10px; }
+        label { display: block; font-weight: bold; font-size: 0.9em; margin-bottom: 5px; color: #555; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .fitting-box { background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #eee; grid-column: span 2; }
+        .result-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
+        .result-card { padding: 20px; border-radius: 10px; background: #fff; border: 1px solid #ddd; }
+        .highlight { font-size: 1.5em; font-weight: bold; color: #1a73e8; }
+        .status-box { padding: 15px; border-radius: 8px; margin-top: 15px; font-weight: bold; }
+        .safe { background: #e6fffa; color: #2c7a7b; border: 1px solid #b2f5ea; }
+        .danger { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🏗️ Kalkulator Rumah Pompa</h2>
+    <h2>🏗️ Kalkulator Perencanaan Pompa</h2>
     
-    <div class="input-group">
-        <label>Debit (LPS):</label>
-        <input type="number" id="q_lps" value="250" oninput="hitung()">
-    </div>
-    <div class="input-group">
-        <label>Diameter Bellmouth (m):</label>
-        <input type="number" id="d_m" value="0.6" step="0.1" oninput="hitung()">
-    </div>
-    <div class="input-group">
-        <label>Min. LWL Katalog (m):</label>
-        <input type="number" id="lwl_cat" value="1.20" step="0.1" oninput="hitung()">
-    </div>
-    <div class="input-group">
-        <label>Min. Jarak Dasar (CL) Katalog (m):</label>
-        <input type="number" id="cl_cat" value="0.30" step="0.01" oninput="hitung()">
+    <div class="tabs">
+        <div id="tab-sub" class="tab active" onclick="switchMode('submersible')">POMPA SUBMERSIBLE</div>
+        <div id="tab-dry" class="tab" onclick="switchMode('dry')">POMPA DRY (SENTRIFUGAL)</div>
     </div>
 
-    <div class="result" id="hasil">
+    <div class="grid">
+        <div class="input-group">
+            <label>Debit Aliran (Q) - LPS:</label>
+            <input type="number" id="q_lps" value="250" oninput="calculate()">
         </div>
+        <div class="input-group">
+            <label>Diameter Suction/Bellmouth (D) - meter:</label>
+            <input type="number" id="d_m" value="0.6" step="0.01" oninput="calculate()">
+        </div>
+    </div>
+
+    <div id="input-submersible">
+        <div class="grid">
+            <div class="input-group">
+                <label>Min. LWL Katalog (m):</label>
+                <input type="number" id="lwl_cat" value="1.20" step="0.1" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>Min. Jarak Dasar (CL) Katalog (m):</label>
+                <input type="number" id="cl_cat" value="0.30" step="0.01" oninput="calculate()">
+            </div>
+        </div>
+    </div>
+
+    <div id="input-dry" style="display:none;">
+        <div class="grid">
+            <div class="input-group">
+                <label>Panjang Pipa Suction (m):</label>
+                <input type="number" id="l_m" value="10" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>Tinggi Statis As ke Air (Z) (m):</label>
+                <input type="number" id="z_m" value="2.0" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>NPSHr dari Katalog (m):</label>
+                <input type="number" id="npshr" value="4.0" oninput="calculate()">
+            </div>
+            <div class="fitting-box">
+                <label>🔧 Kalkulator Fitting (K-Total):</label>
+                <div class="grid" style="margin-top:10px; grid-template-columns: 1fr 1fr 1fr 1fr;">
+                    <div>Check V.(2.0):<input type="number" id="k_cv" value="1" oninput="calculate()"></div>
+                    <div>Elbow 90°(0.3):<input type="number" id="k_el" value="2" oninput="calculate()"></div>
+                    <div>Gate V.(0.2):<input type="number" id="k_gv" value="1" oninput="calculate()"></div>
+                    <div>Foot V.(1.75):<input type="number" id="k_fv" value="1" oninput="calculate()"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="results"></div>
 </div>
 
 <script>
-function hitung() {
-    let q = document.getElementById('q_lps').value / 1000; // m3/s
-    let d = document.getElementById('d_m').value;
-    let lwl_cat = parseFloat(document.getElementById('lwl_cat').value);
-    let cl_cat = parseFloat(document.getElementById('cl_cat').value);
-    let g = 9.81;
+let mode = 'submersible';
 
-    // 1. Kecepatan & Froude
-    let area = 0.25 * Math.PI * Math.pow(d, 2);
-    let v = q / area;
-    let fr = v / Math.sqrt(g * d);
-
-    // 2. Submergence & Layout
-    let s_bell = d * (1 + (2.3 * fr));
-    let c_hitung = 0.57 * d;
-    let b_dinding = 0.75 * d;
-    let p_as = 2.0 * d;
-
-    // 3. Logika Perbandingan (Terbesar)
-    let c_final = Math.max(c_hitung, cl_cat);
-    let lwl_hitung = s_bell + c_final;
-    let lwl_final = Math.max(lwl_hitung, lwl_cat);
-
-    document.getElementById('hasil').innerHTML = `
-        <strong>📍 Hasil Tata Letak:</strong><br>
-        - Jarak ke Dasar (C): ${c_final.toFixed(2)} m<br>
-        - Jarak Dinding (Samping/Blk): ${b_dinding.toFixed(2)} m<br>
-        - Jarak antar As: ${p_as.toFixed(2)} m<br><br>
-        <strong>🌊 Hasil LWL:</strong><br>
-        - LWL Final: <b style="color:blue">${lwl_final.toFixed(2)} m</b>
-        ${lwl_final > lwl_cat ? '<div class="warning">⚠️ LWL mengikuti hitungan teknis (lebih dalam dari katalog).</div>' : ''}
-    `;
+function switchMode(newMode) {
+    mode = newMode;
+    document.getElementById('tab-sub').classList.toggle('active', mode === 'submersible');
+    document.getElementById('tab-dry').classList.toggle('active', mode === 'dry');
+    document.getElementById('input-submersible').style.display = mode === 'submersible' ? 'block' : 'none';
+    document.getElementById('input-dry').style.display = mode === 'dry' ? 'block' : 'none';
+    calculate();
 }
-hitung(); // Jalankan saat pertama load
-</script>
 
+function calculate() {
+    const q_lps = parseFloat(document.getElementById('q_lps').value);
+    const q = q_lps / 1000;
+    const d = parseFloat(document.getElementById('d_m').value);
+    const g = 9.81;
+    const v = q / (0.25 * Math.PI * Math.pow(d, 2));
+
+    let resultHTML = "";
+
+    if (mode === 'submersible') {
+        const lwl_cat = parseFloat(document.getElementById('lwl_cat').value);
+        const cl_cat = parseFloat(document.getElementById('cl_cat').value);
+        
+        const fr = v / Math.sqrt(g * d);
+        const s_bell = d * (1 + (2.3 * fr));
+        const c_calc = 0.57 * d;
+        
+        const c_final = Math.max(c_calc, cl_cat);
+        const lwl_calc = s_bell + c_final;
+        const lwl_final = Math.max(lwl_calc, lwl_cat);
+
+        resultHTML = `
+            <div class="result-container">
+                <div class="result-card">
+                    <label>Tata Letak Kolam (Layout):</label>
+                    <ul>
+                        <li>Jarak Dasar (C): <b>${c_final.toFixed(2)} m</b></li>
+                        <li>Jarak Dinding (B): <b>${(0.75 * d).toFixed(2)} m</b></li>
+                        <li>Jarak Antar Pipa (P): <b>${(2.0 * d).toFixed(2)} m</b></li>
+                    </ul>
+                </div>
+                <div class="result-card">
+                    <label>Level Air Minimum (LWL):</label>
+                    <div class="highlight">${lwl_final.toFixed(2)} meter</div>
+                    <div class="status-box ${lwl_final > lwl_cat ? 'danger' : 'safe'}">
+                        ${lwl_final > lwl_cat ? '⚠️ Mengikuti hitungan teknis (lebih aman)' : '✅ Sesuai standar katalog'}
+                    </div>
+                </div>
+            </div>`;
+    } else {
+        const l = parseFloat(document.getElementById('l_m').value);
+        const z = parseFloat(document.getElementById('z_m').value);
+        const npshr = parseFloat(document.getElementById('npshr').value);
+        
+        const k_total = (document.getElementById('k_cv').value * 2.0) + 
+                        (document.getElementById('k_el').value * 0.3) + 
+                        (document.getElementById('k_gv').value * 0.2) + 
+                        (document.getElementById('k_fv').value * 1.75) + 0.04;
+        
+        const hf_major = 10.67 * (Math.pow(q, 1.852) / (Math.pow(150, 1.852) * Math.pow(d, 4.87))) * l;
+        const hf_minor = k_total * (Math.pow(v, 2) / (2 * g));
+        const total_hf = hf_major + hf_minor;
+        
+        const npsha = 10.33 - 0.24 - total_hf - z;
+        const isSafe = npsha > npshr;
+
+        resultHTML = `
+            <div class="result-container">
+                <div class="result-card">
+                    <label>Analisis Head Loss (Hf):</label>
+                    <ul>
+                        <li>K-Total Fitting: <b>${k_total.toFixed(2)}</b></li>
+                        <li>Friction Loss: <b>${total_hf.toFixed(4)} m</b></li>
+                    </ul>
+                </div>
+                <div class="result-card">
+                    <label>Analisis NPSH:</label>
+                    <div>NPSHa: <span class="highlight">${npsha.toFixed(2)} m</span></div>
+                    <div>NPSHr: <b>${npshr.toFixed(2)} m</b></div>
+                    <div class="status-box ${isSafe ? 'safe' : 'danger'}">
+                        ${isSafe ? '✅ AMAN (NPSHa > NPSHr)' : '❌ BAHAYA KAVITASI!'}
+                    </div>
+                </div>
+            </div>`;
+    }
+    document.getElementById('results').innerHTML = resultHTML;
+}
+calculate();
+</script>
 </body>
 </html>
