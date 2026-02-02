@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Rumah Pompa Pro</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; background: #f4f4f4; }
+        .container { max-width: 600px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: auto; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; }
+        input { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; }
+        .result { background: #e8f4fd; padding: 15px; border-radius: 5px; margin-top: 20px; }
+        .warning { color: #721c24; background: #f8d7da; padding: 10px; border-radius: 5px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🏗️ Kalkulator Rumah Pompa</h2>
+    
+    <div class="input-group">
+        <label>Debit (LPS):</label>
+        <input type="number" id="q_lps" value="250" oninput="hitung()">
+    </div>
+    <div class="input-group">
+        <label>Diameter Bellmouth (m):</label>
+        <input type="number" id="d_m" value="0.6" step="0.1" oninput="hitung()">
+    </div>
+    <div class="input-group">
+        <label>Min. LWL Katalog (m):</label>
+        <input type="number" id="lwl_cat" value="1.20" step="0.1" oninput="hitung()">
+    </div>
+    <div class="input-group">
+        <label>Min. Jarak Dasar (CL) Katalog (m):</label>
+        <input type="number" id="cl_cat" value="0.30" step="0.01" oninput="hitung()">
+    </div>
+
+    <div class="result" id="hasil">
+        </div>
+</div>
+
+<script>
+function hitung() {
+    let q = document.getElementById('q_lps').value / 1000; // m3/s
+    let d = document.getElementById('d_m').value;
+    let lwl_cat = parseFloat(document.getElementById('lwl_cat').value);
+    let cl_cat = parseFloat(document.getElementById('cl_cat').value);
+    let g = 9.81;
+
+    // 1. Kecepatan & Froude
+    let area = 0.25 * Math.PI * Math.pow(d, 2);
+    let v = q / area;
+    let fr = v / Math.sqrt(g * d);
+
+    // 2. Submergence & Layout
+    let s_bell = d * (1 + (2.3 * fr));
+    let c_hitung = 0.57 * d;
+    let b_dinding = 0.75 * d;
+    let p_as = 2.0 * d;
+
+    // 3. Logika Perbandingan (Terbesar)
+    let c_final = Math.max(c_hitung, cl_cat);
+    let lwl_hitung = s_bell + c_final;
+    let lwl_final = Math.max(lwl_hitung, lwl_cat);
+
+    document.getElementById('hasil').innerHTML = `
+        <strong>📍 Hasil Tata Letak:</strong><br>
+        - Jarak ke Dasar (C): ${c_final.toFixed(2)} m<br>
+        - Jarak Dinding (Samping/Blk): ${b_dinding.toFixed(2)} m<br>
+        - Jarak antar As: ${p_as.toFixed(2)} m<br><br>
+        <strong>🌊 Hasil LWL:</strong><br>
+        - LWL Final: <b style="color:blue">${lwl_final.toFixed(2)} m</b>
+        ${lwl_final > lwl_cat ? '<div class="warning">⚠️ LWL mengikuti hitungan teknis (lebih dalam dari katalog).</div>' : ''}
+    `;
+}
+hitung(); // Jalankan saat pertama load
+</script>
+
+</body>
+</html>
