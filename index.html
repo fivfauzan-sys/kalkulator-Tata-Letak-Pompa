@@ -28,10 +28,53 @@
         .warning { background: #fef7e0; color: #b06000; }
         .danger { background: #fce8e6; color: var(--danger); }
         .recommendation { margin-top: 15px; padding: 10px; border-left: 4px solid var(--warning); background: #fff8e1; font-size: 0.85em; }
+        #landing-page {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    background: var(--navy); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; z-index: 2000;
+}
+.menu-card {
+    background: white; padding: 40px; border-radius: 15px;
+    text-align: center; border-top: 8px solid var(--gold);
+}
+.btn-start {
+    background: var(--gold); color: var(--navy); padding: 15px 30px;
+    border: none; border-radius: 8px; font-weight: 900; cursor: pointer;
+    font-size: 1.2rem; transition: 0.3s;
+}
+.btn-start:hover { background: var(--gold-dark); transform: scale(1.05); }
+
+/* Tombol Back di Header */
+.btn-back {
+    background: var(--gold); color: var(--navy); border: none;
+    padding: 8px 15px; border-radius: 5px; font-weight: 800;
+    cursor: pointer; margin-right: 15px; display: flex; align-items: center;
+}
+.btn-back:hover { background: white; }
+
+/* Sembunyikan elemen */
+.hidden { display: none !important; }
     </style>
 </head>
 <body>
+<div id="landing-page">
+    <div class="menu-card">
+        <h1 style="margin-bottom:10px">Sistem Informasi Energi Pipa</h1>
+        <p style="color:#64748b; margin-bottom:30px">Seksi Perencanaan Sudin SDA Jakarta Selatan</p>
+        <button class="btn-start" onclick="toggleMenu(false)">BUKA KALKULATOR PRO v7.35</button>
+    </div>
+</div>
 
+<div id="top-header">
+    <div style="display:flex; align-items:center">
+        <button class="btn-back" onclick="toggleMenu(true)">⬅ KEMBALI</button>
+        <div class="header-left">
+            <div class="main-title">Pipe Energy Calculator</div>
+            <div class="sub-title">Seksi Perencanaan Sudin SDA Jakarta Selatan</div>
+        </div>
+    </div>
+    <div class="credit-tag">AsproXSudinJS</div>
+</div>
 <div class="container">
     <h2>🏢 System Engineering Pump Calculator</h2>
     
@@ -85,6 +128,16 @@
 </div>
 
 <script>
+    function toggleMenu(showLanding) {
+    const landing = document.getElementById('landing-page');
+    if (showLanding) {
+        landing.classList.remove('hidden');
+    } else {
+        landing.classList.add('hidden');
+        // Trigger simulasi saat masuk agar grafik langsung muncul
+        runSimulation();
+    }
+}
 let mode = 'submersible';
 const fittings = [
     { name: 'Entrance', k: 0.5, qty: 1 },
@@ -185,3 +238,4 @@ calculate();
 </script>
 </body>
 </html>
+
