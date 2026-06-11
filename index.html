@@ -1,241 +1,466 @@
+cat > /home/claude/index.html << 'ENDOFFILE'
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Pompa Pro - Final Audit Version</title>
+    <title>SDA Engineering Hub - Jakarta Selatan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1a73e8; --danger: #d93025; --success: #1e8e3e; --warning: #f9ab00; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; padding: 20px; background: #f8f9fa; color: #202124; }
-        .container { max-width: 1100px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); margin: auto; }
-        h2 { text-align: center; color: var(--primary); margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .tabs { display: flex; justify-content: center; margin-bottom: 25px; gap: 10px; }
-        .tab { padding: 12px 30px; cursor: pointer; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: 600; border-radius: 50px; transition: 0.2s; }
-        .tab.active { background: var(--primary); color: white; }
-        .section-title { background: #e8f0fe; color: var(--primary); padding: 10px 15px; border-radius: 6px; margin: 25px 0 15px 0; font-weight: bold; font-size: 0.9em; display: flex; align-items: center; justify-content: space-between; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        label { display: block; font-weight: 600; font-size: 0.85em; margin-bottom: 8px; color: #5f6368; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85em; }
-        th, td { padding: 12px; border: 1px solid #f1f3f4; text-align: center; }
-        th { background: #f8f9fa; font-weight: 600; }
-        .result-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px; }
-        .card { padding: 20px; border-radius: 12px; border: 1px solid #dadce0; background: #fff; }
-        .highlight { font-size: 1.8em; font-weight: 700; color: var(--primary); display: block; margin: 10px 0; }
-        .status-badge { padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 0.85em; display: inline-block; }
-        .safe { background: #e6f4ea; color: var(--success); }
-        .warning { background: #fef7e0; color: #b06000; }
-        .danger { background: #fce8e6; color: var(--danger); }
-        .recommendation { margin-top: 15px; padding: 10px; border-left: 4px solid var(--warning); background: #fff8e1; font-size: 0.85em; }
-        #landing-page {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-    background: var(--navy); display: flex; flex-direction: column;
-    align-items: center; justify-content: center; z-index: 2000;
-}
-.menu-card {
-    background: white; padding: 40px; border-radius: 15px;
-    text-align: center; border-top: 8px solid var(--gold);
-}
-.btn-start {
-    background: var(--gold); color: var(--navy); padding: 15px 30px;
-    border: none; border-radius: 8px; font-weight: 900; cursor: pointer;
-    font-size: 1.2rem; transition: 0.3s;
-}
-.btn-start:hover { background: var(--gold-dark); transform: scale(1.05); }
+        :root {
+            --navy: #0b1120;
+            --navy-mid: #162032;
+            --navy-light: #1e2d42;
+            --gold: #e9a83a;
+            --gold-light: #f5c86a;
+            --gold-dim: rgba(233, 168, 58, 0.12);
+            --text: #e2e8f0;
+            --text-muted: #7f8ea3;
+            --surface: #111827;
+            --border: rgba(255,255,255,0.06);
+        }
 
-/* Tombol Back di Header */
-.btn-back {
-    background: var(--gold); color: var(--navy); border: none;
-    padding: 8px 15px; border-radius: 5px; font-weight: 800;
-    cursor: pointer; margin-right: 15px; display: flex; align-items: center;
-}
-.btn-back:hover { background: white; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Sembunyikan elemen */
-.hidden { display: none !important; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--navy);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* LOGIN OVERLAY */
+        #login-overlay {
+            position: fixed; inset: 0;
+            background: var(--navy);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s;
+        }
+
+        .login-card {
+            background: var(--navy-mid);
+            border: 1px solid rgba(233,168,58,0.25);
+            border-radius: 20px;
+            padding: 48px 40px;
+            width: 360px;
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 56px; height: 56px;
+            background: var(--gold-dim);
+            border: 1px solid rgba(233,168,58,0.3);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+        }
+
+        .login-card h3 {
+            font-size: 1.1rem; font-weight: 700;
+            color: #fff; margin-bottom: 6px;
+        }
+
+        .login-card p {
+            font-size: 0.8rem; color: var(--text-muted);
+            margin-bottom: 28px; line-height: 1.5;
+        }
+
+        .login-card input {
+            width: 100%; padding: 14px;
+            background: var(--navy-light);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            text-align: center; font-size: 1.6rem;
+            letter-spacing: 12px; color: #fff;
+            margin-bottom: 14px; outline: none;
+            transition: border-color 0.2s;
+            font-family: 'Inter', monospace;
+        }
+
+        .login-card input:focus {
+            border-color: var(--gold);
+        }
+
+        .btn-verify {
+            width: 100%; padding: 14px;
+            background: var(--gold);
+            color: var(--navy);
+            border: none; border-radius: 10px;
+            font-weight: 700; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; transition: background 0.2s;
+        }
+
+        .btn-verify:hover { background: var(--gold-light); }
+
+        #error-txt {
+            color: #f87171; font-size: 0.78rem;
+            font-weight: 600; margin-top: 10px;
+            display: none;
+        }
+
+        /* MAIN CONTENT */
+        #content-wrapper {
+            filter: blur(12px);
+            pointer-events: none;
+            transition: filter 0.8s;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            background: var(--navy-mid);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .topbar-brand {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .brand-icon {
+            width: 34px; height: 34px;
+            background: var(--gold-dim);
+            border: 1px solid rgba(233,168,58,0.3);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+
+        .brand-text {
+            font-size: 0.88rem; font-weight: 700;
+            color: #fff; letter-spacing: 0.3px;
+        }
+
+        .brand-sub {
+            font-size: 0.7rem; color: var(--gold);
+            font-weight: 500; margin-top: 1px;
+        }
+
+        .topbar-badge {
+            background: var(--gold-dim);
+            border: 1px solid rgba(233,168,58,0.25);
+            color: var(--gold);
+            padding: 5px 12px; border-radius: 20px;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* HERO */
+        .hero {
+            padding: 64px 32px 48px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--gold-dim);
+            border: 1px solid rgba(233,168,58,0.2);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 0.72rem; font-weight: 600;
+            color: var(--gold); letter-spacing: 0.8px;
+            text-transform: uppercase; margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 2.4rem; font-weight: 800;
+            color: #fff; line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 span { color: var(--gold); }
+
+        .hero p {
+            font-size: 0.95rem; color: var(--text-muted);
+            max-width: 500px; margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* DIVIDER LINE */
+        .divider {
+            width: 60px; height: 2px;
+            background: var(--gold);
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+
+        /* CARDS GRID */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1080px;
+            margin: 0 auto 60px;
+            padding: 0 32px;
+        }
+
+        @media (max-width: 900px) {
+            .cards-grid { grid-template-columns: 1fr; max-width: 480px; }
+            .hero h1 { font-size: 1.8rem; }
+        }
+
+        .module-card {
+            background: var(--navy-mid);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px 28px;
+            display: flex; flex-direction: column;
+            cursor: pointer;
+            transition: border-color 0.3s, transform 0.3s;
+            position: relative; overflow: hidden;
+        }
+
+        .module-card:not(.locked):hover {
+            border-color: rgba(233,168,58,0.35);
+            transform: translateY(-6px);
+        }
+
+        .module-card.locked {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .card-accent {
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 3px; border-radius: 18px 18px 0 0;
+            background: linear-gradient(90deg, var(--gold), transparent);
+        }
+
+        .card-locked-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #ef4444;
+            color: #fff; border-radius: 6px;
+            padding: 3px 8px; font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .card-icon {
+            width: 52px; height: 52px;
+            background: var(--navy-light);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; margin-bottom: 20px;
+        }
+
+        .module-card:not(.locked):hover .card-icon {
+            background: var(--gold-dim);
+            border-color: rgba(233,168,58,0.3);
+        }
+
+        .card-tag {
+            font-size: 0.65rem; font-weight: 700;
+            color: var(--gold); letter-spacing: 1px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1.1rem; font-weight: 700;
+            color: #fff; margin-bottom: 10px; line-height: 1.3;
+        }
+
+        .card-desc {
+            font-size: 0.82rem; color: var(--text-muted);
+            line-height: 1.6; flex: 1; margin-bottom: 24px;
+        }
+
+        .card-btn {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--navy-light);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px;
+            font-size: 0.78rem; font-weight: 700;
+            color: var(--text-muted);
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .module-card:not(.locked):hover .card-btn {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--navy);
+        }
+
+        .card-btn span { letter-spacing: 0.5px; }
+
+        /* FOOTER */
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+            padding: 24px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 10px;
+        }
+
+        .footer-left { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+        .footer-left strong { color: var(--text); }
+
+        .footer-right {
+            font-size: 0.72rem; color: var(--text-muted);
+            background: var(--navy-mid);
+            border: 1px solid var(--border);
+            padding: 6px 12px; border-radius: 8px;
+        }
+
+        /* PORTAL */
+        #portal {
+            display: none; position: fixed; inset: 0;
+            background: #fff; z-index: 9999;
+        }
+
+        .btn-back {
+            position: fixed; bottom: 24px; left: 24px;
+            z-index: 10000;
+            background: var(--gold);
+            color: var(--navy);
+            padding: 12px 24px; border-radius: 40px;
+            font-weight: 700; font-size: 0.82rem;
+            border: none; cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            letter-spacing: 0.3px;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
-<div id="landing-page">
-    <div class="menu-card">
-        <h1 style="margin-bottom:10px">Sistem Informasi Energi Pipa</h1>
-        <p style="color:#64748b; margin-bottom:30px">Seksi Perencanaan Sudin SDA Jakarta Selatan</p>
-        <button class="btn-start" onclick="toggleMenu(false)">BUKA KALKULATOR PRO v7.35</button>
+
+<!-- LOGIN -->
+<div id="login-overlay">
+    <div class="login-card">
+        <div class="login-logo">🔐</div>
+        <h3>SDA Engineering Hub</h3>
+        <p>Masukkan kode verifikasi untuk mengakses dashboard sistem</p>
+        <input type="password" id="pass-field" maxlength="4" placeholder="• • • •" autocomplete="off">
+        <button class="btn-verify" onclick="verifikasi()">Masuk Dashboard</button>
+        <div id="error-txt">Kode verifikasi tidak valid</div>
     </div>
 </div>
 
-<div id="top-header">
-    <div style="display:flex; align-items:center">
-        <button class="btn-back" onclick="toggleMenu(true)">⬅ KEMBALI</button>
-        <div class="header-left">
-            <div class="main-title">Pipe Energy Calculator</div>
-            <div class="sub-title">Seksi Perencanaan Sudin SDA Jakarta Selatan</div>
+<!-- MAIN -->
+<div id="content-wrapper">
+    <nav class="topbar">
+        <div class="topbar-brand">
+            <div class="brand-icon">💧</div>
+            <div>
+                <div class="brand-text">SDA Engineering Hub</div>
+                <div class="brand-sub">Sudin SDA Jakarta Selatan</div>
+            </div>
         </div>
+        <div class="topbar-badge">Rentek_SDA_JS</div>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-eyebrow">
+            <span>●</span> Seksi Perencanaan — Suku Dinas Sumber Daya Air
+        </div>
+        <h1>Dashboard <span>Mobile</span></h1>
+        <div class="divider"></div>
+        <p>Platform analisis teknis terpadu untuk perencanaan infrastruktur pengendalian banjir Kota Jakarta Selatan</p>
     </div>
-    <div class="credit-tag">AsproXSudinJS</div>
+
+    <div class="cards-grid">
+
+        <div class="module-card locked" onclick="alert('Modul Pump Storage Simulator masih dalam tahap sinkronisasi data.')">
+            <div class="card-accent"></div>
+            <div class="card-locked-badge">🔒 LOCKED</div>
+            <div class="card-icon">📈</div>
+            <div class="card-tag">Modul 01</div>
+            <div class="card-title">Pump Storage Simulator</div>
+            <div class="card-desc">Analisis siklus operasional pompa dan monitoring TMA kolam olakan secara presisi.</div>
+            <div class="card-btn">
+                <span>Coming Soon</span>
+                <span>—</span>
+            </div>
+        </div>
+
+        <div class="module-card" onclick="bukaModul('pipe-energy.html')">
+            <div class="card-accent"></div>
+            <div class="card-icon">🧪</div>
+            <div class="card-tag">Modul 02</div>
+            <div class="card-title">Pipe Energy Calculator</div>
+            <div class="card-desc">Penghitungan head loss, distribusi tekanan, dan verifikasi spesifikasi material pipa jaringan transmisi.</div>
+            <div class="card-btn">
+                <span>Buka Calculator</span>
+                <span>→</span>
+            </div>
+        </div>
+
+        <div class="module-card" onclick="bukaModul('manual-instruction.html')">
+            <div class="card-accent"></div>
+            <div class="card-icon">📖</div>
+            <div class="card-tag">Panduan</div>
+            <div class="card-title">Manual Instruction</div>
+            <div class="card-desc">Panduan teknis lengkap, flow penggunaan aplikasi, dan dokumentasi parameter hidrolika sistem.</div>
+            <div class="card-btn">
+                <span>Buka Panduan</span>
+                <span>→</span>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-left">
+            <strong>for Latsar 2026</strong> · Fauzan Afif<br>
+            Seksi Perencanaan — Sudin Sumber Daya Air Jakarta Selatan
+        </div>
+        <div class="footer-right">v1.0 · 2026</div>
+    </footer>
 </div>
-<div class="container">
-    <h2>🏢 System Engineering Pump Calculator</h2>
-    
-    <div class="tabs">
-        <button id="tab-sub" class="tab active" onclick="setMode('submersible')">SUBMERSIBLE</button>
-        <button id="tab-dry" class="tab" onclick="setMode('dry')">DRY PUMP (NPSHa)</button>
-    </div>
 
-    <div class="section-title"><span>⚙️ DATA INPUT UTAMA</span></div>
-    <div class="grid">
-        <div><label>Debit Aliran (LPS):</label><input type="number" id="q_lps" value="250" oninput="calculate()"></div>
-        <div><label>Diameter Pipa Suction (m):</label><input type="number" id="d_m" value="0.6" step="0.01" oninput="calculate()"></div>
-        <div>
-            <label>Material Pipa (Hazen-Williams C):</label>
-            <select id="c_material" onchange="calculate()">
-                <option value="150">HDPE / PVC (C=150)</option>
-                <option value="100">Steel / GI (C=100)</option>
-                <option value="83">Cast Iron (C=83)</option>
-                <option value="120">Concrete (C=120)</option>
-            </select>
-        </div>
-    </div>
-
-    <div id="ui-submersible">
-        <div class="section-title"><span>🌊 PARAMETER SUMUR (WET PIT)</span></div>
-        <div class="grid">
-            <div><label>Min. LWL Katalog (m):</label><input type="number" id="lwl_cat" value="1.2" oninput="calculate()"></div>
-            <div><label>Min. Jarak Dasar (CL) (m):</label><input type="number" id="cl_cat" value="0.3" oninput="calculate()"></div>
-        </div>
-    </div>
-
-    <div id="ui-dry" style="display:none;">
-        <div class="section-title"><span>📍 ELEVASI & LINGKUNGAN</span></div>
-        <div class="grid">
-            <div><label>EL. LWL (m):</label><input type="number" id="el_lwl" value="50.00" oninput="calculate()"></div>
-            <div><label>EL. As Outlet Suction (m):</label><input type="number" id="el_as" value="79.09" oninput="calculate()"></div>
-            <div><label>Hs (Atmosfer) (m):</label><input type="number" id="hs_m" value="11.03" oninput="calculate()"></div>
-            <div><label>Hvp (Vapor Press) (m):</label><input type="number" id="hvp_m" value="0.32" oninput="calculate()"></div>
-            <div><label>Panjang Pipa Lurus (m):</label><input type="number" id="l_m" value="10" oninput="calculate()"></div>
-            <div><label>NPSHr Katalog (m):</label><input type="number" id="npshr" value="4.0" oninput="calculate()"></div>
-        </div>
-
-        <div class="section-title"><span>🔧 FITTING LOSSES (K-FACTOR)</span></div>
-        <table>
-            <thead><tr><th>Fitting Item</th><th>Nilai K</th><th>Qty</th><th>Total K</th></tr></thead>
-            <tbody id="fitting-body"></tbody>
-        </table>
-    </div>
-
-    <div id="results" class="result-container"></div>
+<!-- PORTAL -->
+<div id="portal">
+    <button class="btn-back" onclick="tutupModul()">← BACK</button>
+    <iframe id="app-frame" src=""></iframe>
 </div>
 
 <script>
-    function toggleMenu(showLanding) {
-    const landing = document.getElementById('landing-page');
-    if (showLanding) {
-        landing.classList.remove('hidden');
-    } else {
-        landing.classList.add('hidden');
-        // Trigger simulasi saat masuk agar grafik langsung muncul
-        runSimulation();
+    const KODE_RAHASIA = "9999";
+
+    function verifikasi() {
+        const input = document.getElementById('pass-field').value;
+        const overlay = document.getElementById('login-overlay');
+        const content = document.getElementById('content-wrapper');
+        const error = document.getElementById('error-txt');
+
+        if(input === KODE_RAHASIA) {
+            overlay.style.opacity = "0";
+            setTimeout(() => {
+                overlay.style.display = "none";
+                content.style.filter = "none";
+                content.style.pointerEvents = "auto";
+            }, 500);
+        } else {
+            error.style.display = "block";
+            document.getElementById('pass-field').value = "";
+        }
     }
-}
-let mode = 'submersible';
-const fittings = [
-    { name: 'Entrance', k: 0.5, qty: 1 },
-    { name: 'Check Valve', k: 2.0, qty: 1 },
-    { name: 'Elbow 90°', k: 0.3, qty: 2 },
-    { name: 'Flange/Joint', k: 0.04, qty: 4 }
-];
 
-function setMode(m) {
-    mode = m;
-    document.getElementById('tab-sub').classList.toggle('active', mode === 'submersible');
-    document.getElementById('tab-dry').classList.toggle('active', mode === 'dry');
-    document.getElementById('ui-submersible').style.display = mode === 'submersible' ? 'block' : 'none';
-    document.getElementById('ui-dry').style.display = mode === 'dry' ? 'block' : 'none';
-    calculate();
-}
+    document.getElementById('pass-field').addEventListener("keyup", function(e) {
+        if (e.key === "Enter") verifikasi();
+    });
 
-function renderFitting() {
-    document.getElementById('fitting-body').innerHTML = fittings.map((f, i) => `
-        <tr>
-            <td>${f.name}</td>
-            <td><input type="number" step="0.01" value="${f.k}" oninput="fittings[${i}].k=parseFloat(this.value);calculate()"></td>
-            <td><input type="number" value="${f.qty}" oninput="fittings[${i}].qty=parseInt(this.value);calculate()"></td>
-            <td>${(f.k * f.qty).toFixed(2)}</td>
-        </tr>
-    `).join('');
-}
-
-function calculate() {
-    const q_lps = parseFloat(document.getElementById('q_lps').value) || 0;
-    const q = q_lps / 1000;
-    const d = parseFloat(document.getElementById('d_m').value) || 0.1;
-    const g = 9.81;
-    const v = q / (0.25 * Math.PI * Math.pow(d, 2));
-
-    // Audit Kecepatan
-    let vClass = v > 2.0 ? 'danger' : (v > 1.5 ? 'warning' : 'safe');
-    let vText = v > 2.0 ? 'Terlalu Tinggi' : (v > 1.5 ? 'Tinggi (Cek Losses)' : 'Ideal');
-    let recD = Math.sqrt(q / (0.25 * Math.PI * 1.5));
-
-    let html = `
-        <div class="card">
-            <label>KECEPATAN ALIRAN (v)</label>
-            <span class="highlight">${v.toFixed(2)} m/s</span>
-            <span class="status-badge ${vClass}">${vText}</span>
-            ${v > 1.5 ? `<div class="recommendation">💡 Saran: Gunakan diameter min. <b>${(recD*1000).toFixed(0)} mm</b> untuk menurunkan kecepatan ke 1.5 m/s.</div>` : ''}
-        </div>`;
-
-    if (mode === 'submersible') {
-        const s = d * (1 + (2.3 * (v / Math.sqrt(g * d))));
-        const c = Math.max(0.57 * d, parseFloat(document.getElementById('cl_cat').value));
-        const lwl = Math.max(s + c, parseFloat(document.getElementById('lwl_cat').value));
-
-        html += `
-            <div class="card">
-                <label>HASIL LAYOUT SUBMERSIBLE</label>
-                <span class="highlight">LWL: ${lwl.toFixed(2)} m</span>
-                <p style="font-size:0.85em; color:#555;">
-                    - Jarak Dasar (C): ${c.toFixed(2)} m<br>
-                    - Submergence (S): ${s.toFixed(2)} m<br>
-                    - Jarak Dinding: ${(0.75*d).toFixed(2)} m
-                </p>
-            </div>`;
-    } else {
-        const el_lwl = parseFloat(document.getElementById('el_lwl').value) || 0;
-        const el_as = parseFloat(document.getElementById('el_as').value) || 0;
-        const z = el_lwl - el_as;
-        const hs = parseFloat(document.getElementById('hs_m').value);
-        const hvp = parseFloat(document.getElementById('hvp_m').value);
-        const l = parseFloat(document.getElementById('l_m').value);
-        const npshr = parseFloat(document.getElementById('npshr').value);
-        const c_hw = parseFloat(document.getElementById('c_material').value);
-
-        const hf_maj = 10.67 * (Math.pow(q, 1.852) / (Math.pow(c_hw, 1.852) * Math.pow(d, 4.87))) * l;
-        const kt = fittings.reduce((acc, f) => acc + (f.k * (f.qty || 0)), 0);
-        const hf_min = kt * (v * v / (2 * g));
-        const total_hf = hf_maj + hf_min;
-        const npsha = hs - hvp - total_hf + z;
-
-        html += `
-            <div class="card">
-                <label>ANALISIS NPSH AVAILABLE</label>
-                <span class="highlight" style="color:${npsha > npshr ? 'var(--success)' : 'var(--danger)'}">${npsha.toFixed(2)} m</span>
-                <span class="status-badge ${npsha > npshr ? 'safe' : 'danger'}">${npsha > npshr ? 'AMAN' : 'BAHAYA KAVITASI'}</span>
-                <p style="font-size:0.8em; color:#666; margin-top:10px; border-top:1px solid #eee; pt:10px;">
-                    <b>Audit Losses:</b><br>
-                    Mayor (Pipe): ${hf_maj.toFixed(4)} m<br>
-                    Minor (Fitting): ${hf_min.toFixed(4)} m<br>
-                    Z Elevation: ${z.toFixed(2)} m
-                </p>
-            </div>`;
+    function bukaModul(file) {
+        document.getElementById('portal').style.display = 'block';
+        document.getElementById('app-frame').src = file;
     }
-    document.getElementById('results').innerHTML = html;
-}
 
-renderFitting();
-calculate();
+    function tutupModul() {
+        document.getElementById('portal').style.display = 'none';
+        document.getElementById('app-frame').src = '';
+    }
 </script>
 </body>
 </html>
-
+ENDOFFILE
+echo "Done index.html"
