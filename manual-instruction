@@ -1,0 +1,349 @@
+cat > /home/claude/manual-instruction.html << 'ENDOFFILE'
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Book - SDA Engineering Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0b1120;
+            --navy-mid: #162032;
+            --navy-light: #1e2d42;
+            --gold: #e9a83a;
+            --gold-dim: rgba(233,168,58,0.1);
+            --text: #e2e8f0;
+            --text-muted: #7f8ea3;
+            --border: rgba(255,255,255,0.07);
+            --surface: rgba(255,255,255,0.04);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--navy);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 0 0 60px;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            background: var(--navy-mid);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand-icon {
+            width: 32px; height: 32px;
+            background: var(--gold-dim);
+            border: 1px solid rgba(233,168,58,0.3);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+        .brand-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+        .brand-sub { font-size: 0.68rem; color: var(--gold); }
+        .badge { background: var(--gold-dim); border: 1px solid rgba(233,168,58,0.2); color: var(--gold); padding: 4px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; }
+
+        /* HERO */
+        .hero {
+            background: var(--navy-mid);
+            border-bottom: 1px solid var(--border);
+            padding: 48px 40px 40px;
+        }
+
+        .hero-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--gold-dim);
+            border: 1px solid rgba(233,168,58,0.2);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.68rem; font-weight: 700;
+            color: var(--gold); letter-spacing: 0.8px;
+            text-transform: uppercase; margin-bottom: 16px;
+        }
+
+        .hero h1 { font-size: 1.9rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+        .hero p { font-size: 0.88rem; color: var(--text-muted); max-width: 520px; }
+
+        /* CONTENT */
+        .content { max-width: 860px; margin: 0 auto; padding: 40px 40px 0; }
+
+        /* SECTION */
+        .section { margin-bottom: 48px; }
+
+        .section-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 24px; padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-num {
+            width: 30px; height: 30px;
+            background: var(--gold-dim);
+            border: 1px solid rgba(233,168,58,0.25);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.78rem; font-weight: 800; color: var(--gold);
+            flex-shrink: 0;
+        }
+
+        .section-title { font-size: 1rem; font-weight: 700; color: #fff; }
+
+        p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 16px; }
+
+        /* FLOW TIMELINE */
+        .flow-wrap {
+            position: relative;
+            padding: 8px 0 8px 28px;
+            margin: 24px 0;
+        }
+
+        .flow-wrap::before {
+            content: '';
+            position: absolute; left: 11px; top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+        }
+
+        .flow-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        .flow-item::before {
+            content: '';
+            position: absolute; left: -17px; top: 14px;
+            width: 10px; height: 10px;
+            background: var(--gold);
+            border-radius: 50%;
+            border: 2px solid var(--navy);
+            box-shadow: 0 0 0 3px rgba(233,168,58,0.15);
+        }
+
+        .flow-card {
+            background: var(--navy-mid);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            transition: border-color 0.2s;
+        }
+
+        .flow-card:hover { border-color: rgba(233,168,58,0.2); }
+
+        .flow-step { font-size: 0.65rem; font-weight: 800; color: var(--gold); letter-spacing: 1px; margin-bottom: 4px; }
+        .flow-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .flow-desc { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* MODULE BUTTONS */
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 24px; }
+
+        .mod-btn {
+            padding: 16px 20px; border-radius: 12px;
+            border: 1px solid rgba(233,168,58,0.2);
+            background: var(--gold-dim);
+            font-size: 0.82rem; font-weight: 700; color: var(--gold);
+            text-align: center; cursor: default;
+        }
+
+        .mod-btn.green { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.25); color: #34d399; }
+
+        /* SUBSECTIONS */
+        h3 {
+            font-size: 0.9rem; font-weight: 700; color: #fff;
+            margin: 28px 0 10px;
+            padding-left: 10px;
+            border-left: 3px solid var(--gold);
+        }
+
+        h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin: 20px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        ul, ol { padding-left: 20px; margin-bottom: 16px; }
+        li { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.6; }
+        li strong { color: var(--text); }
+
+        /* FORMULA */
+        .formula-box {
+            background: var(--navy-mid);
+            border: 1px solid rgba(233,168,58,0.2);
+            border-left: 3px solid var(--gold);
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem; font-weight: 700;
+            color: var(--gold);
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        code {
+            background: var(--navy-light);
+            border: 1px solid var(--border);
+            padding: 2px 7px; border-radius: 5px;
+            font-family: monospace; font-size: 0.82rem;
+            color: var(--gold-light, #f5c86a);
+        }
+
+        /* TABLE */
+        .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: 12px; border: 1px solid var(--border); }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        thead th {
+            background: var(--navy-light);
+            color: var(--text-muted);
+            padding: 12px 14px; text-align: left;
+            font-weight: 600; font-size: 0.75rem;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: var(--surface); }
+        tbody td:first-child { color: var(--text); font-weight: 500; }
+
+        @media (max-width: 640px) {
+            .topbar, .hero, .content { padding-left: 20px; padding-right: 20px; }
+            .hero h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="topbar">
+    <div class="brand">
+        <div class="brand-icon">📖</div>
+        <div>
+            <div class="brand-name">Manual Instruction</div>
+            <div class="brand-sub">SDA Engineering Hub</div>
+        </div>
+    </div>
+    <div class="badge">Rentek_SDA_JS</div>
+</nav>
+
+<div class="hero">
+    <div class="hero-tag">📄 Dokumentasi Sistem</div>
+    <h1>Buku Panduan & Flow Penggunaan</h1>
+    <p>SDA Engineering Hub — Suku Dinas Sumber Daya Air Jakarta Selatan</p>
+</div>
+
+<div class="content">
+
+    <!-- SECTION 1 -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-num">1</div>
+            <div class="section-title">Flow Penggunaan Aplikasi (User Journey)</div>
+        </div>
+
+        <div class="flow-wrap">
+            <div class="flow-item">
+                <div class="flow-card">
+                    <div class="flow-step">STEP 01</div>
+                    <div class="flow-title">Akses Tautan Utama</div>
+                    <div class="flow-desc">Membuka dashboard SDA Engineering Hub</div>
+                </div>
+            </div>
+            <div class="flow-item">
+                <div class="flow-card">
+                    <div class="flow-step">STEP 02</div>
+                    <div class="flow-title">Tahap Gerbang Keamanan</div>
+                    <div class="flow-desc">Masukkan password untuk mengakses sistem</div>
+                </div>
+            </div>
+            <div class="flow-item">
+                <div class="flow-card">
+                    <div class="flow-step">STEP 03</div>
+                    <div class="flow-title">Validasi Sistem</div>
+                    <div class="flow-desc">Sistem melakukan verifikasi akses pengguna</div>
+                </div>
+            </div>
+            <div class="flow-item">
+                <div class="flow-card">
+                    <div class="flow-step">STEP 04</div>
+                    <div class="flow-title">Pemilihan Modul Analisis</div>
+                    <div class="flow-desc">Pilih modul yang akan digunakan</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="module-grid">
+            <div class="mod-btn">🚀 Pump Storage Simulator</div>
+            <div class="mod-btn">⚙️ Pipe Energy Calculator</div>
+            <div class="mod-btn green">← Navigasi Kembali (BACK)</div>
+        </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-num">2</div>
+            <div class="section-title">Buku Manual Operasional & Parameter Teknis</div>
+        </div>
+
+        <p>Bagian ini menjelaskan instruksi penginputan data parameter pada masing-masing modul beserta landasan rumus hidrolika yang digunakan oleh sistem dalam memproses kalkulasi.</p>
+
+        <h3>A. Modul: Pump Storage Simulator</h3>
+        <p>Modul ini dirancang untuk mensimulasikan fluktuasi air pada kolam olakan stasiun pompa guna mencegah limpasan banjir.</p>
+
+        <h4>Data yang Harus Diinput Pengguna:</h4>
+        <ul>
+            <li><strong>Tinggi Muka Air (TMA) Awal (meter):</strong> Ketinggian muka air aktual eksisting di dalam kolam olakan sebelum unit pompa dioperasikan.</li>
+            <li><strong>Debit Banjir Masuk / Inflow (m³/detik):</strong> Volume air per detik yang mengalir masuk ke kolam olakan dari saluran drainase utama wilayah.</li>
+            <li><strong>Kapasitas Pompa / Outflow (m³/detik):</strong> Total daya sedot/buang dari kombinasi unit-unit pompa pengendali banjir yang sedang aktif beroperasi.</li>
+        </ul>
+
+        <h4>Rumus Hidrolika yang Digunakan:</h4>
+        <p>Simulasi perubahan volume tampungan kolam dihitung berdasarkan hukum kekekalan massa (Persamaan Kontinuitas):</p>
+        <div class="formula-box">ΔV = (Q_inflow − Q_outflow) × Δt</div>
+        <p>Dimana <code>ΔV</code> adalah perubahan volume tampungan kolam, dan <code>Δt</code> adalah interval waktu operasional pompa. Sistem akan mengonversi hasil perubahan volume ini menjadi representasi visual fluktuasi TMA.</p>
+
+        <h3>B. Modul: Pipe Energy Calculator</h3>
+        <p>Modul ini digunakan untuk menganalisis kehilangan tinggi tekan (<em>head loss</em>) akibat gesekan pada pipa penyalur cairan (<em>discharge pipe</em>).</p>
+
+        <h4>Data yang Harus Diinput Pengguna:</h4>
+        <ul>
+            <li><strong>Diameter Dalam Pipa (mm):</strong> Ukuran penampang bersih bagian dalam pipa yang dilewati air.</li>
+            <li><strong>Panjang Total Pipa (meter):</strong> Bentang panjang jalur pipa dari titik hisap hingga titik buang akhir.</li>
+            <li><strong>Debit Aliran Cairan (Liter/detik atau m³/detik):</strong> Besaran laju volume aliran rencana yang dipompa melalui jaringan tersebut.</li>
+            <li><strong>Jenis Material Pipa:</strong> Pilihan material untuk menentukan variabel tingkat kekasaran dinding dalam pipa.</li>
+        </ul>
+
+        <h4>Dua Pilihan Metode Rumus yang Digunakan:</h4>
+        <p><strong>1. Metode Hazen-Williams</strong> — Umum digunakan untuk analisis praktis pipa tekan air bersih/banjir:</p>
+        <div class="formula-box">h_f = 10.67 × L × Q^1.852 / (C^1.852 × D^4.87)</div>
+        <p><strong>2. Metode Darcy-Weisbach</strong> — Pendekatan teoritis dengan tingkat akurasi tinggi:</p>
+        <div class="formula-box">h_f = f × (L / D) × (v² / 2g)</div>
+
+        <h4>Referensi Koefisien Kekasaran Material:</h4>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Material Pipa Eksisting</th>
+                        <th>Koefisien Hazen-Williams (C)</th>
+                        <th>Kekasaran Absolut Darcy (ε — mm)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>PVC / Polyethylene (HDPE)</td><td>140 – 150</td><td>0.0015 – 0.007</td></tr>
+                    <tr><td>Ductile Iron Pipe (DIP)</td><td>130</td><td>0.25</td></tr>
+                    <tr><td>Welded Steel (Baja Las)</td><td>120</td><td>0.045</td></tr>
+                    <tr><td>Beton (Concrete)</td><td>100 – 110</td><td>0.3 – 3.0</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
+ENDOFFILE
+echo "Done manual"
