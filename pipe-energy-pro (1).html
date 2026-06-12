@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipe Energy Calculator — Sudin SDA Jakarta Selatan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --blue-900: #0c2340;
+            --blue-700: #1a4480;
+            --blue-500: #2563eb;
+            --blue-100: #dbeafe;
+            --blue-50:  #eff6ff;
+            --slate-900: #0f172a;
+            --slate-700: #334155;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50:  #f8fafc;
+            --white: #ffffff;
+            --success: #059669;
+            --success-bg: #ecfdf5;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --warning: #d97706;
+            --warning-bg: #fffbeb;
+            --amber-400: #fbbf24;
+            --cyan-500: #06b6d4;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--slate-100);
+            color: var(--slate-900);
+            min-height: 100vh;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* ── TOP BAR ── */
+        #topbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--slate-200);
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .topbar-icon {
+            width: 32px; height: 32px;
+            background: var(--blue-50);
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .topbar-icon svg { width: 18px; height: 18px; color: var(--blue-500); }
+        .topbar-app-name { font-size: 14px; font-weight: 600; color: var(--slate-900); }
+        .topbar-breadcrumb {
+            font-size: 12px; color: var(--slate-500);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .topbar-breadcrumb span { color: var(--slate-300); }
+        .topbar-right { display: flex; align-items: center; gap: 8px; }
+        .method-badge {
+            font-size: 11px; font-weight: 500;
+            background: var(--blue-50); color: var(--blue-700);
+            border: 1px solid var(--blue-100);
+            padding: 4px 10px; border-radius: 20px;
+        }
+
+        /* ── LAYOUT ── */
+        .app-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            min-height: calc(100vh - 56px);
+        }
+
+        /* ── SIDEBAR ── */
+        #sidebar {
+            background: var(--white);
+            border-right: 1px solid var(--slate-200);
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--slate-500);
+            margin-bottom: 12px;
+        }
+
+        /* ── FORM ELEMENTS ── */
+        .field { margin-bottom: 12px; }
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--slate-700);
+            margin-bottom: 5px;
+        }
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-family: var(--font-sans);
+            border: 1px solid var(--slate-300);
+            border-radius: var(--radius-md);
+            background: var(--white);
+            color: var(--slate-900);
+            transition: border-color 0.15s, box-shadow 0.15s;
+            appearance: none;
+        }
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .field input[type="number"] { font-family: var(--font-mono); font-size: 12px; }
+
+        .field-row { display: flex; gap: 10px; }
+        .field-row .field { flex: 1; }
+
+        /* ── SEGMENT CARD ── */
+        .seg-card {
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            margin-bottom: 10px;
+            background: var(--slate-50);
+        }
+        .seg-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .seg-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--slate-700);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .seg-length-badge {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            background: var(--blue-50);
+            color: var(--blue-700);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--blue-100);
+        }
+        .btn-remove {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--slate-500);
+            background: none;
+            border: 1px solid var(--slate-200);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-remove:hover { color: var(--danger); border-color: var(--danger); background: var(--danger-bg); }
+
+        /* ── FITTING TABLE ── */
+        .fitting-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .fitting-table th {
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--slate-200);
+        }
+        .fitting-table td {
+            padding: 5px 8px;
+            border-bottom: 1px solid var(--slate-100);
+            color: var(--slate-700);
+        }
+        .fitting-table input {
+            width: 60px;
+            padding: 3px 6px;
+            font-size: 12px;
+            font-family: var(--font-mono);
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            background: var(--white);
+        }
+        .fitting-table input[readonly] {
+            background: var(--slate-50);
+            color: var(--slate-400);
+            border-color: transparent;
+        }
+        .fitting-table input:not([readonly]):focus {
+            outline: none;
+            border-color: var(--blue-500);
+        }
+        .fitting-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 8px 0;
+            border-top: 1px solid var(--slate-200);
+            margin-top: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .fitting-total-val {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--blue-700);
+        }
+
+        /* ── BUTTONS ── */
+        .btn-add-seg {
+            width: 100%;
+            padding: 9px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--blue-700);
+            background: var(--blue-50);
+            border: 1px dashed var(--blue-500);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-add-seg:hover { background: var(--blue-100); }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--white);
+            background: var(--blue-700);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background 0.15s;
+            margin-bottom: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary:hover { background: var(--blue-900); }
+        .btn-secondary {
+            width: 100%;
+            padding: 9px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--slate-700);
+            background: var(--white);
+            border: 1px solid var(--slate-300);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-secondary:hover { background: var(--slate-50); border-color: var(--slate-400); }
+
+        /* ── MAIN AREA ── */
+        #main {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-x: hidden;
+        }
+
+        /* ── CHART AREA ── */
+        .chart-container {
+            background: var(--white);
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .chart-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--slate-100);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chart-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--slate-900);
+        }
+        .chart-legend {
+            display: flex; gap: 16px;
+        }
+        .legend-item {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 11px; color: var(--slate-500);
+        }
+        .legend-line {
+            width: 20px; height: 2px;
+        }
+        .canvas-wrap { padding: 0; position: relative; }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 340px;
+            cursor: crosshair;
+        }
+        #chart-tooltip {
+            position: absolute;
+            background: var(--white);
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            color: var(--slate-900);
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 100;
+            min-width: 180px;
+        }
+        .tooltip-title {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--slate-900);
+            margin-bottom: 6px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+        .tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            color: var(--slate-500);
+            margin-top: 3px;
+        }
+        .tooltip-row span:last-child {
+            font-family: var(--font-mono);
+            font-weight: 500;
+            color: var(--slate-900);
+        }
+
+        /* ── RESULTS TABLE ── */
+        .results-container {
+            background: var(--white);
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .results-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--slate-100);
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .table-wrap { overflow-x: auto; }
+        table.results {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        table.results th {
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--slate-200);
+            background: var(--slate-50);
+        }
+        table.results td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--slate-100);
+            color: var(--slate-700);
+        }
+        table.results td.mono { font-family: var(--font-mono); font-size: 11px; }
+        table.results tr.row-special td { background: var(--slate-50); font-weight: 500; }
+        table.results tr:last-child td { border-bottom: none; }
+        .val-ok { color: var(--success); font-weight: 500; }
+        .val-danger { color: var(--danger); font-weight: 500; }
+
+        /* ── STATUS INDICATORS ── */
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .status-card {
+            background: var(--white);
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .status-icon {
+            width: 36px; height: 36px;
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .status-icon svg { width: 18px; height: 18px; }
+        .status-icon.ok { background: var(--success-bg); color: var(--success); }
+        .status-icon.fail { background: var(--danger-bg); color: var(--danger); }
+        .status-icon.idle { background: var(--slate-100); color: var(--slate-400); }
+        .status-meta { flex: 1; min-width: 0; }
+        .status-label { font-size: 11px; color: var(--slate-500); margin-bottom: 2px; }
+        .status-value { font-size: 13px; font-weight: 600; }
+        .status-value.ok { color: var(--success); }
+        .status-value.fail { color: var(--danger); }
+        .status-value.idle { color: var(--slate-400); }
+
+        /* ── PROJECT NAME FIELD ── */
+        .project-field {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+        .project-field label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .project-field input {
+            width: 100%;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: var(--font-sans);
+            background: transparent;
+            border: none;
+            color: var(--slate-900);
+            padding: 0;
+        }
+        .project-field input:focus { outline: none; }
+
+        /* ── INLINE ERROR ── */
+        .inline-error {
+            display: none;
+            font-size: 12px;
+            color: var(--danger);
+            background: var(--danger-bg);
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-md);
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            align-items: center;
+            gap: 6px;
+        }
+        .inline-error.show { display: flex; }
+
+        /* ── SELECT WRAPPER ── */
+        .select-wrap { position: relative; }
+        .select-wrap::after {
+            content: '';
+            pointer-events: none;
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            border: 4px solid transparent;
+            border-top-color: var(--slate-400);
+            border-bottom: none;
+            margin-top: 2px;
+        }
+
+        /* ── DIVIDER ── */
+        .divider { border: none; border-top: 1px solid var(--slate-100); margin: 4px 0 16px; }
+
+        @media (max-width: 960px) {
+            .app-layout { grid-template-columns: 1fr; }
+            #sidebar { border-right: none; border-bottom: 1px solid var(--slate-200); }
+            .status-grid { grid-template-columns: 1fr; }
+            canvas { height: 260px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header id="topbar">
+    <div class="topbar-left">
+        <div class="topbar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                <path d="M8 12h8M12 8v8"/>
+            </svg>
+        </div>
+        <div>
+            <div class="topbar-app-name">Pipe Energy Calculator</div>
+        </div>
+    </div>
+    <div class="topbar-breadcrumb">
+        <span>Seksi Perencanaan</span>
+        <span>·</span>
+        <span>Sudin SDA Jakarta Selatan</span>
+    </div>
+    <div class="topbar-right">
+        <span class="method-badge" id="method-badge">Hazen-Williams</span>
+    </div>
+</header>
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+
+        <!-- Project Name -->
+        <div class="project-field">
+            <label>Nama proyek / lokasi</label>
+            <input type="text" id="nama_project" value="Pembangunan Jaringan Pipa Transmisi Utama" placeholder="Masukkan nama proyek...">
+        </div>
+
+        <!-- Metode -->
+        <div class="sidebar-section">
+            <div class="section-label">Metode analisis</div>
+            <div class="field">
+                <div class="select-wrap">
+                    <select id="calc_method" onchange="runSimulation(); renderSegmentsUI(); updateMethodBadge();" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--slate-300);border-radius:var(--radius-md);background:var(--white);appearance:none;font-family:var(--font-sans);">
+                        <option value="HW">Hazen-Williams (koefisien C)</option>
+                        <option value="DW">Darcy-Weisbach (kekasaran ε)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parameter Sistem -->
+        <div class="sidebar-section">
+            <div class="section-label">Parameter sistem</div>
+            <div class="field-row">
+                <div class="field">
+                    <label>El. dasar reservoar (m)</label>
+                    <input type="number" id="el_dasar" value="28.088" step="0.001" onchange="runSimulation()">
+                </div>
+                <div class="field">
+                    <label>El. as pompa (m)</label>
+                    <input type="number" id="el_pmp" value="29.300" step="0.001" onchange="runSimulation()">
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Tinggi air (m)</label>
+                    <input type="number" id="t_air" value="1.442" step="0.001" onchange="runSimulation()">
+                </div>
+                <div class="field">
+                    <label>Debit aliran Q (m³/s)</label>
+                    <input type="number" id="debit" value="0.25" step="0.01" onchange="runSimulation()">
+                </div>
+            </div>
+            <div class="field">
+                <label>Head pompa (m)</label>
+                <input type="number" id="head_pmp" value="20" step="0.1" onchange="runSimulation()">
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Segmen Pipa -->
+        <div class="sidebar-section">
+            <div class="section-label">Konfigurasi segmen pipa</div>
+            <div id="segments-list"></div>
+            <div id="seg-error" class="inline-error">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Minimal satu segmen pipa diperlukan.
+            </div>
+            <button class="btn-add-seg" onclick="addSegment()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Tambah segmen
+            </button>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Fitting -->
+        <div class="sidebar-section">
+            <div class="section-label">Aksesoris & fitting (ΣK)</div>
+            <table class="fitting-table">
+                <thead>
+                    <tr><th>Aksesoris</th><th style="text-align:center">K</th><th style="text-align:center">Qty</th></tr>
+                </thead>
+                <tbody id="fitting-body"></tbody>
+            </table>
+            <div class="fitting-total-row">
+                <span style="color:var(--slate-500);font-size:12px;font-weight:500;">Total ΣK</span>
+                <span class="fitting-total-val" id="total-k-val">0.00</span>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Actions -->
+        <button class="btn-primary" onclick="runSimulation()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Hitung energi
+        </button>
+        <button class="btn-secondary" onclick="openPrintReport()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Unduh laporan PDF
+        </button>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main id="main">
+
+        <!-- Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">Profil gradien garis energi</div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-line" style="background:#ef4444;"></div>HGL
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-line" style="background:#06b6d4;border-top:2px dashed #06b6d4;"></div>EGL
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-line" style="background:#f59e0b;height:4px;"></div>Pipa
+                    </div>
+                </div>
+            </div>
+            <div class="canvas-wrap">
+                <div id="chart-tooltip"></div>
+                <canvas id="pCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- Results table -->
+        <div class="results-container">
+            <div class="results-header">Matriks perhitungan hidrolis</div>
+            <div class="table-wrap">
+                <table class="results">
+                    <thead>
+                        <tr>
+                            <th>Objek jalur</th>
+                            <th>Koef. pipa</th>
+                            <th>L (m)</th>
+                            <th>V (m/s)</th>
+                            <th>f Darcy</th>
+                            <th>H-Major (m)</th>
+                            <th>El. HGL (m)</th>
+                            <th>Head sisa (m)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="status-grid">
+            <div class="status-card" id="card-kecepatan">
+                <div class="status-icon idle" id="icon-kecepatan">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                </div>
+                <div class="status-meta">
+                    <div class="status-label">Kecepatan aliran</div>
+                    <div class="status-value idle" id="val-kecepatan">Belum dihitung</div>
+                </div>
+            </div>
+            <div class="status-card" id="card-head">
+                <div class="status-icon idle" id="icon-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <div class="status-meta">
+                    <div class="status-label">Sisa tekanan ujung</div>
+                    <div class="status-value idle" id="val-head">Belum dihitung</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    const materialsData = [
+        { label: "HDPE / PVC", c: 150, eps: 0.0000015 },
+        { label: "Baja / Steel", c: 100, eps: 0.000045 },
+        { label: "Ductile Iron (DI)", c: 120, eps: 0.00025 },
+        { label: "GI (Galvanis)", c: 100, eps: 0.0005 }
+    ];
+
+    let segments = [
+        { x: 40, y: 35.0, d: 0.3, matIdx: 0 },
+        { x: 100, y: 35.0, d: 0.3, matIdx: 0 },
+        { x: 180, y: 45.0, d: 0.3, matIdx: 0 }
+    ];
+
+    let fittingData = [
+        { name: 'Bellmouth Entrance', k: 0.05, qty: 0 },
+        { name: 'Foot Valve + Strainer', k: 2.50, qty: 0 },
+        { name: 'Screen / Trashrack', k: 0.10, qty: 0 },
+        { name: 'Flange Connection', k: 0.08, qty: 0 },
+        { name: 'Gate Valve (Open)', k: 0.15, qty: 0 },
+        { name: 'Butterfly Valve', k: 0.30, qty: 0 },
+        { name: 'Check Valve (Swing)', k: 2.00, qty: 0 },
+        { name: 'Elbow 90° (Standard)', k: 0.90, qty: 0 },
+        { name: 'Elbow 45° (Standard)', k: 0.40, qty: 0 },
+        { name: 'Tee Flow (Straight)', k: 0.60, qty: 0 },
+        { name: 'Reducer / Expander', k: 0.25, qty: 0 },
+        { name: 'Flexible Joint', k: 0.20, qty: 0 },
+        { name: 'Pipe Exit (Outlet)', k: 1.00, qty: 0 }
+    ];
+
+    let animationOffset = 0;
+    let waveOffset = 0;
+    let cachedResults = [];
+    let drawMetrics = { gX: null, gY: null, nodes: [] };
+
+    function updateMethodBadge() {
+        const v = document.getElementById('calc_method').value;
+        document.getElementById('method-badge').textContent = v === 'HW' ? 'Hazen-Williams' : 'Darcy-Weisbach';
+    }
+
+    function renderFitting() {
+        let totalK = 0;
+        document.getElementById('fitting-body').innerHTML = fittingData.map((f, i) => {
+            totalK += f.k * f.qty;
+            return `<tr>
+                <td>${f.name}</td>
+                <td style="text-align:center"><input type="number" step="0.01" value="${f.k}" readonly></td>
+                <td style="text-align:center"><input type="number" value="${f.qty}" style="width:52px" onchange="fittingData[${i}].qty=parseInt(this.value)||0; runSimulation();"></td>
+            </tr>`;
+        }).join('');
+        document.getElementById('total-k-val').textContent = totalK.toFixed(2);
+        return totalK;
+    }
+
+    function renderSegmentsUI() {
+        const method = document.getElementById('calc_method').value;
+        const list = document.getElementById('segments-list');
+        list.innerHTML = segments.map((s, i) => {
+            let prevX = i === 0 ? 0 : segments[i-1].x;
+            let prevY = i === 0 ? parseFloat(document.getElementById('el_pmp').value) : segments[i-1].y;
+            let L = Math.sqrt(Math.pow(s.x-prevX,2)+Math.pow(s.y-prevY,2)).toFixed(2);
+            let mat = materialsData[s.matIdx];
+            let coefVal = method === 'HW' ? `C = ${mat.c}` : `ε = ${mat.eps}`;
+
+            const selectOpts = materialsData.map((m, idx) =>
+                `<option value="${idx}" ${s.matIdx === idx ? 'selected' : ''}>${m.label}</option>`
+            ).join('');
+
+            return `<div class="seg-card">
+                <div class="seg-card-header">
+                    <span class="seg-label">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+                        Segmen ${i+1} · <span class="seg-length-badge">L = ${L} m</span>
+                    </span>
+                    <button class="btn-remove" onclick="removeSegment(${i})">Hapus</button>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label>Posisi X (m)</label>
+                        <input type="number" value="${s.x}" onchange="segments[${i}].x=parseFloat(this.value); renderSegmentsUI(); runSimulation();">
+                    </div>
+                    <div class="field">
+                        <label>Elevasi Y (m)</label>
+                        <input type="number" value="${s.y}" onchange="segments[${i}].y=parseFloat(this.value); renderSegmentsUI(); runSimulation();">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Diameter (m)</label>
+                    <input type="number" value="${s.d}" step="0.01" onchange="segments[${i}].d=parseFloat(this.value); runSimulation();">
+                </div>
+                <div class="field">
+                    <label>Material pipa <span style="color:var(--slate-400);font-weight:400">(${coefVal})</span></label>
+                    <div class="select-wrap">
+                        <select style="width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--slate-300);border-radius:var(--radius-md);background:var(--white);appearance:none;font-family:var(--font-sans);" onchange="segments[${i}].matIdx=this.selectedIndex; renderSegmentsUI(); runSimulation();">${selectOpts}</select>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function addSegment() {
+        const last = segments[segments.length-1];
+        segments.push({...last, x: last.x + 50});
+        document.getElementById('seg-error').classList.remove('show');
+        renderSegmentsUI(); runSimulation();
+    }
+
+    function removeSegment(index) {
+        if (segments.length > 1) {
+            segments.splice(index, 1);
+            document.getElementById('seg-error').classList.remove('show');
+            renderSegmentsUI(); runSimulation();
+        } else {
+            document.getElementById('seg-error').classList.add('show');
+        }
+    }
+
+    function setStatus(id, isOk, label) {
+        const icon = document.getElementById('icon-' + id);
+        const val = document.getElementById('val-' + id);
+        icon.className = 'status-icon ' + (isOk ? 'ok' : 'fail');
+        val.className = 'status-value ' + (isOk ? 'ok' : 'fail');
+        val.textContent = isOk ? 'Memenuhi ketentuan' : 'Tidak memenuhi';
+    }
+
+    function runSimulation() {
+        const method = document.getElementById('calc_method').value;
+        const totalK = renderFitting();
+        const Q = parseFloat(document.getElementById('debit').value) || 0.0001;
+        const hP = parseFloat(document.getElementById('head_pmp').value) || 0;
+        const elD = parseFloat(document.getElementById('el_dasar').value) || 0;
+        const tA = parseFloat(document.getElementById('t_air').value) || 0;
+        const elPmp = parseFloat(document.getElementById('el_pmp').value) || 0;
+        const g = 9.81; const nu = 1.004e-6;
+
+        let waterSurface = elD + tA;
+        let results = [];
+        let velocities = [];
+
+        results.push({ name: "Reservoar", info: "-", L: 0, v: 0, vH: 0, f: "-", hw: 0, hgl: waterSurface, res: 0, x1: -40, y1: elD, x2: 0, y2: waterSurface });
+        let curHGL = waterSurface + hP;
+        results.push({ name: "Pompa", info: "-", L: 0, v: 0, vH: 0, f: "-", hw: 0, hgl: curHGL, res: curHGL - elPmp, x1: 0, y1: elPmp, x2: 0, y2: elPmp });
+
+        let prevX = 0, prevY = elPmp;
+        segments.forEach((s, i) => {
+            const L = Math.sqrt(Math.pow(s.x-prevX,2)+Math.pow(s.y-prevY,2));
+            const v = Q / (0.25 * Math.PI * Math.pow(s.d, 2));
+            const vH = (v**2) / (2*g);
+            const mat = materialsData[s.matIdx];
+            let hw = 0, fVal = "-";
+
+            if (method === "HW") {
+                hw = (10.67 * L * Math.pow(Q, 1.852)) / (Math.pow(mat.c, 1.852) * Math.pow(s.d, 4.87));
+            } else {
+                let Re = (v * s.d) / nu;
+                if (Re > 2300) {
+                    fVal = 0.25 / Math.pow(Math.log10((mat.eps/(3.7*s.d))+(5.74/Math.pow(Re,0.9))), 2);
+                } else { fVal = 64/Re; }
+                hw = fVal * (L/s.d) * vH;
+                fVal = fVal.toFixed(4);
+            }
+
+            const minor = i === 0 ? totalK * vH : 0;
+            curHGL -= (hw + minor);
+            velocities.push(v);
+            results.push({ name: `Segmen ${i+1}`, info: method==='HW'?mat.c:mat.eps, L, v, vH, f: fVal, hw, hgl: curHGL, res: curHGL-s.y, x1: prevX, y1: prevY, x2: s.x, y2: s.y, d: s.d });
+            prevX = s.x; prevY = s.y;
+        });
+
+        cachedResults = results;
+
+        document.getElementById('table-body').innerHTML = results.map((r, idx) => {
+            const vOk = r.v >= 1.5 && r.v <= 2.5;
+            const hOk = r.res >= 1.0;
+            return `<tr class="${idx<2?'row-special':''}">
+                <td style="font-weight:${idx<2?'500':'400'}">${r.name}</td>
+                <td class="mono">${r.info}</td>
+                <td class="mono">${r.L.toFixed(1)}</td>
+                <td class="mono ${idx<2?'':(vOk?'val-ok':'val-danger')}">${idx<2?'—':r.v.toFixed(2)}</td>
+                <td class="mono">${r.f}</td>
+                <td class="mono">${r.hw.toFixed(3)}</td>
+                <td class="mono">${r.hgl.toFixed(2)}</td>
+                <td class="mono ${idx===0?'':(hOk?'val-ok':'val-danger')}">${idx===0?'—':r.res.toFixed(2)+' m'}</td>
+            </tr>`;
+        }).join('');
+
+        const vAllOk = velocities.every(v => v >= 1.5 && v <= 2.5);
+        const hFinalOk = results[results.length-1].res >= 1.0;
+        setStatus('kecepatan', vAllOk);
+        setStatus('head', hFinalOk);
+    }
+
+    // ── CANVAS ──
+    const canvasEl = document.getElementById('pCanvas');
+    const tooltipEl = document.getElementById('chart-tooltip');
+
+    canvasEl.addEventListener('mousemove', (e) => {
+        if (!drawMetrics.nodes.length) return;
+        const rect = canvasEl.getBoundingClientRect();
+        const mX = e.clientX - rect.left;
+        const mY = e.clientY - rect.top;
+        let active = null, minD = 22;
+        drawMetrics.nodes.forEach(n => {
+            const d = Math.sqrt((n.cx-mX)**2 + (n.cy-mY)**2);
+            if (d < minD) { minD = d; active = n; }
+        });
+        if (active) {
+            tooltipEl.style.opacity = '1';
+            let left = active.cx + 16;
+            if (left + 200 > canvasEl.offsetWidth) left = active.cx - 210;
+            tooltipEl.style.left = left + 'px';
+            tooltipEl.style.top = (active.cy - 20) + 'px';
+            if (active.type === 'pump') {
+                tooltipEl.innerHTML = `<div class="tooltip-title">Stasiun pompa</div>
+                    <div class="tooltip-row"><span>Elevasi</span><span>${active.data.y1.toFixed(2)} m</span></div>
+                    <div class="tooltip-row"><span>HGL keluar</span><span>${active.data.hgl.toFixed(2)} m</span></div>
+                    <div class="tooltip-row"><span>Status</span><span style="color:var(--success)">Aktif</span></div>`;
+            } else {
+                const hOk = active.data.res >= 1.0;
+                tooltipEl.innerHTML = `<div class="tooltip-title">${active.data.name}</div>
+                    <div class="tooltip-row"><span>Jarak X</span><span>${active.data.x2.toFixed(1)} m</span></div>
+                    <div class="tooltip-row"><span>Elevasi pipa</span><span>${active.data.y2.toFixed(2)} m</span></div>
+                    <div class="tooltip-row"><span>Elevasi HGL</span><span>${active.data.hgl.toFixed(2)} m</span></div>
+                    <div class="tooltip-row"><span>Head sisa</span><span style="color:${hOk?'var(--success)':'var(--danger)'}">${active.data.res.toFixed(2)} m · ${hOk?'Aman':'Kritis'}</span></div>`;
+            }
+        } else {
+            tooltipEl.style.opacity = '0';
+        }
+    });
+    canvasEl.addEventListener('mouseleave', () => { tooltipEl.style.opacity = '0'; });
+
+    function animationLoop() {
+        animationOffset += 0.5;
+        waveOffset += 0.08;
+        if (animationOffset > 40) animationOffset = 0;
+        if (cachedResults.length > 0) {
+            drawVisuals(cachedResults,
+                parseFloat(document.getElementById('el_dasar').value)||0,
+                parseFloat(document.getElementById('t_air').value)||0);
+        }
+        requestAnimationFrame(animationLoop);
+    }
+
+    function drawVisuals(res, elD, tA) {
+        const c = canvasEl;
+        const ctx = c.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const rect = c.getBoundingClientRect();
+        c.width = rect.width * dpr; c.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        const width = rect.width; const height = rect.height;
+        const isMobile = width < 600;
+
+        const allX = res.map(r=>r.x1).concat(res.map(r=>r.x2));
+        const allY = res.map(r=>r.hgl).concat(res.map(r=>r.y2)).concat([elD]);
+        const minX = Math.min(...allX); const maxX = Math.max(...allX);
+        const minY = Math.min(...allY); const maxY = Math.max(...allY);
+
+        const mX = isMobile ? 42 : 68; const mY = isMobile ? 44 : 56;
+        const scX = (width - mX*2) / (maxX-minX||100);
+        const scY = (height - mY*2) / (maxY-minY||20);
+        const gX = v => mX + (v-minX)*scX;
+        const gY = v => height - mY - (v-minY)*scY;
+
+        drawMetrics.gX = gX; drawMetrics.gY = gY; drawMetrics.nodes = [];
+        ctx.clearRect(0, 0, width, height);
+
+        // Grid lines
+        const yStep = (maxY - minY) / 4 || 5;
+        for (let y = minY; y <= maxY + 0.001; y += yStep) {
+            ctx.beginPath();
+            ctx.moveTo(mX, gY(y)); ctx.lineTo(width - mX, gY(y));
+            ctx.strokeStyle = '#f1f5f9'; ctx.lineWidth = 1; ctx.stroke();
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = `400 10px 'JetBrains Mono', monospace`;
+            ctx.textAlign = 'right';
+            ctx.fillText(y.toFixed(1)+'m', mX-10, gY(y)+3.5);
+        }
+
+        // X axis labels
+        res.forEach((r, idx) => {
+            if (idx >= 1) {
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '400 10px monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(r.x2.toFixed(0)+'m', gX(r.x2), height - mY + 18);
+            }
+        });
+
+        // Reservoir
+        const waterTopY = gY(elD + tA);
+        const resW = 40 * scX;
+        const rsX = gX(-40);
+        ctx.beginPath();
+        ctx.moveTo(rsX, gY(elD));
+        ctx.lineTo(rsX, waterTopY);
+        for (let x = 0; x <= resW; x += 2) {
+            ctx.lineTo(rsX + x, waterTopY + Math.sin((x/5) + waveOffset) * 2);
+        }
+        ctx.lineTo(rsX + resW, gY(elD));
+        ctx.closePath();
+        const resG = ctx.createLinearGradient(rsX, waterTopY, rsX, gY(elD));
+        resG.addColorStop(0, 'rgba(6,182,212,0.18)');
+        resG.addColorStop(1, 'rgba(6,182,212,0.03)');
+        ctx.fillStyle = resG; ctx.fill();
+        ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.fillStyle = '#64748b'; ctx.font = '500 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Reservoar', gX(-20), waterTopY - 10);
+
+        // HGL dashed before pump
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = 'rgba(239,68,68,0.3)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(gX(-40), waterTopY);
+        ctx.lineTo(gX(0), waterTopY); ctx.lineTo(gX(0), gY(res[1].hgl));
+        ctx.stroke(); ctx.setLineDash([]);
+
+        // Pipe segments
+        res.forEach((r, idx) => {
+            if (idx < 2) return;
+            // Pressure zone fill
+            ctx.beginPath();
+            ctx.moveTo(gX(r.x1), gY(res[idx-1].hgl));
+            ctx.lineTo(gX(r.x2), gY(r.hgl));
+            ctx.lineTo(gX(r.x2), gY(r.y2));
+            ctx.lineTo(gX(r.x1), gY(r.y1));
+            ctx.closePath();
+            const pG = ctx.createLinearGradient(0, gY(r.hgl), 0, gY(r.y2));
+            pG.addColorStop(0, 'rgba(239,68,68,0.08)');
+            pG.addColorStop(1, 'rgba(239,68,68,0.0)');
+            ctx.fillStyle = pG; ctx.fill();
+
+            // Pipe outline
+            ctx.lineWidth = isMobile ? 6 : 8; ctx.strokeStyle = '#e2e8f0';
+            ctx.beginPath(); ctx.moveTo(gX(r.x1), gY(r.y1)); ctx.lineTo(gX(r.x2), gY(r.y2)); ctx.stroke();
+            ctx.lineWidth = isMobile ? 4 : 5; ctx.strokeStyle = '#f59e0b';
+            ctx.beginPath(); ctx.moveTo(gX(r.x1), gY(r.y1)); ctx.lineTo(gX(r.x2), gY(r.y2)); ctx.stroke();
+
+            // Flow animation
+            ctx.save();
+            ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+            ctx.setLineDash([4, 14]); ctx.lineDashOffset = -animationOffset;
+            ctx.beginPath(); ctx.moveTo(gX(r.x1), gY(r.y1)); ctx.lineTo(gX(r.x2), gY(r.y2)); ctx.stroke();
+            ctx.restore();
+
+            // HGL line
+            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(gX(r.x1), gY(res[idx-1].hgl)); ctx.lineTo(gX(r.x2), gY(r.hgl)); ctx.stroke();
+
+            // EGL line
+            ctx.save(); ctx.setLineDash([5, 4]);
+            ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(gX(r.x1), gY(res[idx-1].hgl+r.vH)); ctx.lineTo(gX(r.x2), gY(r.hgl+r.vH)); ctx.stroke();
+            ctx.restore();
+
+            // Junction dot
+            drawMetrics.nodes.push({ cx: gX(r.x2), cy: gY(r.y2), type: 'junction', data: r });
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath(); ctx.arc(gX(r.x2), gY(r.y2), 4, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
+
+            // Segment label
+            const midX = (gX(r.x1)+gX(r.x2))/2;
+            const midY = (gY(r.y1)+gY(r.y2))/2;
+            ctx.fillStyle = '#64748b'; ctx.font = '400 9px monospace'; ctx.textAlign = 'center';
+            ctx.fillText(isMobile ? `S${idx-1}` : `Segmen ${idx-1}`, midX, midY - 8);
+        });
+
+        // Pump symbol
+        const pRad = isMobile ? 10 : 13;
+        const pumpX = gX(0); const pumpY = gY(res[1].y1);
+        drawMetrics.nodes.push({ cx: pumpX, cy: pumpY, type: 'pump', data: res[1] });
+        ctx.fillStyle = '#1a4480';
+        ctx.beginPath(); ctx.arc(pumpX, pumpY, pRad, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(pumpX, pumpY, pRad, 0, Math.PI*2); ctx.stroke();
+        ctx.fillStyle = '#f59e0b'; ctx.font = `500 ${isMobile?9:10}px Inter, sans-serif`; ctx.textAlign = 'center';
+        ctx.fillText('P', pumpX, pumpY + 3.5);
+        ctx.fillStyle = '#64748b'; ctx.font = '500 9px Inter, sans-serif';
+        ctx.fillText('Pompa', pumpX, pumpY + pRad + 14);
+    }
+
+    // ── PRINT REPORT ──
+    function openPrintReport() {
+        const rw = window.open('', '_blank');
+        const tgl = new Date().toLocaleDateString('id-ID', {year:'numeric',month:'long',day:'numeric'});
+        const namaProj = document.getElementById('nama_project').value || '-';
+        const elD = parseFloat(document.getElementById('el_dasar').value).toFixed(3);
+        const elPmp = parseFloat(document.getElementById('el_pmp').value).toFixed(3);
+        const tA = parseFloat(document.getElementById('t_air').value).toFixed(3);
+        const Q = parseFloat(document.getElementById('debit').value).toFixed(3);
+        const hP = parseFloat(document.getElementById('head_pmp').value).toFixed(2);
+        const method = document.getElementById('calc_method').value === 'HW' ? 'Hazen-Williams' : 'Darcy-Weisbach';
+        const totalK = document.getElementById('total-k-val').textContent;
+
+        const vOk = document.getElementById('val-kecepatan').textContent.includes('Memenuhi');
+        const hOk = document.getElementById('val-head').textContent.includes('Memenuhi');
+
+        let fRows = fittingData.filter(f=>f.qty>0).map(f=>`
+            <tr><td>${f.name}</td><td style="text-align:center;font-family:monospace">${f.k.toFixed(2)}</td>
+            <td style="text-align:center">${f.qty}</td>
+            <td style="text-align:center;font-family:monospace">${(f.k*f.qty).toFixed(2)}</td></tr>`).join('');
+        if(!fRows) fRows = `<tr><td colspan="4" style="color:#64748b;font-style:italic;padding:10px">Tidak ada aksesoris dipilih</td></tr>`;
+
+        let rRows = cachedResults.map((r,idx)=>`
+            <tr style="${idx<2?'background:#f8fafc;font-weight:500':''}">
+            <td>${r.name}</td><td style="text-align:center;font-family:monospace">${r.info}</td>
+            <td style="text-align:center;font-family:monospace">${r.L.toFixed(1)}</td>
+            <td style="text-align:center;font-family:monospace;color:${idx<2?'inherit':(r.v>=1.5&&r.v<=2.5?'#059669':'#dc2626')}">${idx<2?'—':r.v.toFixed(2)}</td>
+            <td style="text-align:center;font-family:monospace">${r.f}</td>
+            <td style="text-align:center;font-family:monospace">${r.hw.toFixed(3)}</td>
+            <td style="text-align:center;font-family:monospace">${r.hgl.toFixed(2)}</td>
+            <td style="text-align:center;font-family:monospace;color:${idx===0?'inherit':(r.res>=1.0?'#059669':'#dc2626')}">${idx===0?'—':r.res.toFixed(2)+' m'}</td></tr>`).join('');
+
+        const allX = cachedResults.map(r=>r.x1).concat(cachedResults.map(r=>r.x2));
+        const allY = cachedResults.map(r=>r.hgl).concat(cachedResults.map(r=>r.y2));
+        const minX=Math.min(...allX),maxX=Math.max(...allX);
+        const minY=Math.min(...allY)-2,maxY=Math.max(...allY)+5;
+        const sW=720,sH=280,sM=72;
+        const sCx=(sW-sM*2)/(maxX-minX||1),sCy=(sH-sM*2)/(maxY-minY||1);
+        const sX=v=>sM+(v-minX)*sCx, sY=v=>sH-sM-(v-minY)*sCy;
+        let svg=`<svg viewBox="0 0 ${sW} ${sH}" width="100%" xmlns="http://www.w3.org/2000/svg" style="border:1px solid #e2e8f0;border-radius:8px;">`;
+        for(let i=0;i<=4;i++){let y=minY+(maxY-minY)*(i/4);svg+=`<line x1="${sM}" y1="${sY(y)}" x2="${sW-sM}" y2="${sY(y)}" stroke="#f1f5f9" stroke-width="1.5"/><text x="${sM-8}" y="${sY(y)+3.5}" font-family="monospace" font-size="9" fill="#64748b" text-anchor="end">${y.toFixed(1)}m</text>`;}
+        let pp=`${sX(cachedResults[1].x1)},${sY(cachedResults[1].y1)} `,hp=`${sX(cachedResults[1].x1)},${sY(cachedResults[0].hgl)} `,ep=`${sX(cachedResults[1].x1)},${sY(cachedResults[0].hgl)} `;
+        cachedResults.forEach((r,idx)=>{if(idx>=1){pp+=`${sX(r.x2)},${sY(r.y2)} `;hp+=`${sX(r.x2)},${sY(r.hgl)} `;ep+=`${sX(r.x2)},${sY(r.hgl+r.vH)} `;}});
+        svg+=`<polyline points="${pp}" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linejoin="round"/>`;
+        svg+=`<polyline points="${hp}" fill="none" stroke="#ef4444" stroke-width="2" stroke-linejoin="round"/>`;
+        svg+=`<polyline points="${ep}" fill="none" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="5,4"/>`;
+        cachedResults.forEach((r,idx)=>{if(idx>=1){svg+=`<circle cx="${sX(r.x2)}" cy="${sY(r.y2)}" r="3.5" fill="#f59e0b"/>`;svg+=`<text x="${sX(r.x2)}" y="${sH-sM+14}" font-family="monospace" font-size="8.5" fill="#64748b" text-anchor="middle">${r.x2.toFixed(0)}m</text>`;}});
+        svg+=`<line x1="${sM}" y1="${sH-sM}" x2="${sW-sM}" y2="${sH-sM}" stroke="#cbd5e1" stroke-width="1"/>`;
+        svg+=`</svg>`;
+
+        rw.document.write(`<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8">
+        <title>Laporan Teknis Hidrolis — ${namaProj}</title>
+        <style>
+            *{box-sizing:border-box;margin:0;padding:0}
+            body{font-family:Arial,sans-serif;color:#0f172a;padding:18mm 16mm;background:#fff;line-height:1.5;font-size:13px}
+            .kop{border-bottom:3px double #0f172a;padding-bottom:10px;margin-bottom:20px;text-align:center}
+            .kop h1{font-size:1.15rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px}
+            .kop h2{font-size:0.9rem;font-weight:400;color:#334155}
+            .kop p{font-size:0.72rem;color:#475569;margin-top:4px}
+            .doc-title{text-align:center;margin-bottom:20px}
+            .doc-title h3{font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px}
+            .doc-title .underline{width:260px;height:2px;background:#1a4480;margin:6px auto 0}
+            .meta{width:100%;font-size:0.82rem;margin-bottom:20px;border-collapse:collapse}
+            .meta td{padding:3px 0;vertical-align:top}
+            .sec{font-size:0.88rem;font-weight:700;border-left:3px solid #1a4480;padding-left:8px;margin:20px 0 10px;text-transform:uppercase;color:#0f172a}
+            .param-grid{width:100%;border-collapse:collapse;margin-bottom:16px}
+            .param-cell{border:1px solid #e2e8f0;background:#f8fafc;padding:10px;width:33.33%;font-size:0.78rem}
+            .param-cell .lbl{font-size:0.65rem;color:#64748b;font-weight:600;text-transform:uppercase;margin-bottom:2px}
+            .param-cell .val{font-size:0.95rem;font-weight:700;font-family:monospace}
+            table.dt{width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:16px}
+            table.dt th{background:#0f172a;color:#fff;padding:8px 10px;text-align:left;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px}
+            table.dt td{padding:7px 10px;border-bottom:1px solid #f1f5f9}
+            .comp{border:1px solid #e2e8f0;border-left:3px solid #0f172a;background:#f8fafc;padding:14px;margin-bottom:20px;border-radius:4px;font-size:0.82rem}
+            .comp table{width:100%;border-collapse:collapse}
+            .comp td{padding:5px 0}
+            .sig-table{width:100%;margin-top:40px;border-collapse:collapse;font-size:0.82rem}
+            .sig-table td{width:50%;padding:0 20px;vertical-align:top}
+            .page-break{page-break-before:always}
+            .legend-row{text-align:center;font-size:0.72rem;color:#475569;margin-top:6px}
+        </style></head><body>
+        <div class="kop">
+            <h1>Pemerintah Provinsi Daerah Khusus Jakarta</h1>
+            <h2>Suku Dinas Sumber Daya Air Kota Administrasi Jakarta Selatan</h2>
+            <p>Gedung Walikota Jakarta Selatan, Blok C, Lt. 9 · Jl. Prapanca Raya No.9, Kebayoran Baru, Jakarta Selatan<br>
+            sumberdayaair.jakarta.go.id · sudinsda.jaksel@jakarta.go.id</p>
+        </div>
+        <div class="doc-title">
+            <h3>Laporan Teknis Analisis Hidrolis dan Evaluasi Energi Jaringan Pipa</h3>
+            <div class="underline"></div>
+        </div>
+        <table class="meta">
+            <tr><td style="width:22%;font-weight:600;color:#334155">Nomor Dokumen</td><td style="width:3%">:</td><td>SDA-JS/RENTEK/2026/089</td></tr>
+            <tr><td style="font-weight:600;color:#334155">Tanggal</td><td>:</td><td>${tgl}</td></tr>
+            <tr><td style="font-weight:600;color:#334155">Perihal</td><td>:</td><td>Analisis Hidrolis — <strong>${namaProj}</strong></td></tr>
+            <tr><td style="font-weight:600;color:#334155">Metode Analisis</td><td>:</td><td>${method}</td></tr>
+        </table>
+        <div class="sec">1. Parameter input sistem jaringan</div>
+        <table class="param-grid">
+            <tr>
+                <td class="param-cell"><div class="lbl">El. dasar reservoar</div><div class="val">${elD} m</div></td>
+                <td class="param-cell"><div class="lbl">El. as pompa</div><div class="val">${elPmp} m</div></td>
+                <td class="param-cell"><div class="lbl">Tinggi air aktual</div><div class="val">${tA} m</div></td>
+            </tr>
+            <tr>
+                <td class="param-cell"><div class="lbl">Debit aliran rencana (Q)</div><div class="val">${Q} m³/s</div></td>
+                <td class="param-cell"><div class="lbl">Kapasitas head pompa</div><div class="val">${hP} m</div></td>
+                <td class="param-cell"><div class="lbl">Metode analisis</div><div class="val">${method}</div></td>
+            </tr>
+        </table>
+        <div class="sec">2. Koefisien fitting aksesoris (minor losses)</div>
+        <table class="dt"><thead><tr><th>Aksesoris</th><th>K</th><th>Qty</th><th>Subtotal K</th></tr></thead><tbody>${fRows}<tr style="background:#f8fafc;font-weight:600"><td colspan="3" style="text-align:right;padding:8px 10px">Total akumulasi ΣK :</td><td style="font-family:monospace;color:#1a4480;padding:8px 10px">${totalK}</td></tr></tbody></table>
+        <div class="page-break"></div>
+        <div class="sec">3. Grafik profil gradien garis energi</div>
+        ${svg}
+        <div class="legend-row">— HGL &nbsp;&nbsp; - - EGL &nbsp;&nbsp; — Pipa transmisi</div>
+        <div class="sec">4. Matriks validasi perhitungan hidrolis</div>
+        <table class="dt"><thead><tr><th>Objek jalur</th><th>Koef.</th><th>L (m)</th><th>V (m/s)</th><th>f Darcy</th><th>H-Major</th><th>El. HGL</th><th>Head sisa</th></tr></thead><tbody>${rRows}</tbody></table>
+        <div class="page-break"></div>
+        <div class="sec">5. Evaluasi kelayakan teknis</div>
+        <div class="comp"><table>
+            <tr><td style="width:45%;font-weight:600">Kriteria kecepatan aliran pipa (V)</td><td>:</td><td style="font-weight:700;color:${vOk?'#059669':'#dc2626'}">${vOk?'Memenuhi ketentuan':'Tidak memenuhi ketentuan'}</td></tr>
+            <tr><td style="font-weight:600">Kriteria sisa tekanan ujung (residual head)</td><td>:</td><td style="font-weight:700;color:${hOk?'#059669':'#dc2626'}">${hOk?'Memenuhi ketentuan':'Tidak memenuhi ketentuan'}</td></tr>
+        </table></div>
+        <table class="sig-table"><tr>
+            <td style="text-align:left">Mengetahui,<br><strong>Kepala Seksi Perencanaan</strong><br>Sudin SDA Jakarta Selatan<br><br><br><br><br>___________________________<br>NIP. &nbsp;</td>
+            <td style="text-align:left;padding-left:60px">Dibuat oleh,<br><strong>Tim Perencana Teknis Hidrolis</strong><br>Sudin SDA Jakarta Selatan<br><br><br><br><br>___________________________<br>NIP. &nbsp;</td>
+        </tr></table>
+        <script>window.onload=function(){setTimeout(function(){window.print();},500);};<\/script>
+        </body></html>`);
+        rw.document.close();
+    }
+
+    window.addEventListener('resize', () => { runSimulation(); });
+    window.onload = () => { renderFitting(); renderSegmentsUI(); runSimulation(); animationLoop(); };
+</script>
+</body>
+</html>
