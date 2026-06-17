@@ -645,17 +645,32 @@
         <div class="chart-container">
             <div class="chart-header">
                 <div class="chart-title">Profil gradien garis energi</div>
-                <div class="chart-legend">
-                    <div class="legend-item">
-                        <div class="legend-line" style="background:#ef4444;"></div>HGL
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-line" style="background:#06b6d4;border-top:2px dashed #06b6d4;"></div>EGL
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-line" style="background:#f59e0b;height:4px;"></div>Pipa
-                    </div>
-                </div>
+           <div class="chart-legend">
+    <div class="legend-item">
+        <div class="legend-line"
+             style="background:#ef4444;height:2px;">
+        </div>
+        <span style="color:#ef4444;font-weight:600;">HGL</span>
+    </div>
+
+    <div class="legend-item">
+        <div class="legend-line"
+             style="
+                height:0;
+                border-top:2px dashed #06b6d4;
+                background:transparent;
+             ">
+        </div>
+        <span style="color:#06b6d4;font-weight:600;">EGL</span>
+    </div>
+
+    <div class="legend-item">
+        <div class="legend-line"
+             style="background:#f59e0b;height:4px;">
+        </div>
+        <span style="color:#f59e0b;font-weight:600;">Pipa</span>
+    </div>
+</div>
             </div>
             <div class="canvas-wrap">
                 <div id="chart-tooltip"></div>
