@@ -1229,12 +1229,39 @@
         <div class="page-break"></div>
         <div class="sec">3. Grafik profil gradien garis energi</div>
         ${svg}
-     <div class="legend-row">
-    <span style="color:#ef4444;font-weight:700;">— HGL</span>
-    &nbsp;&nbsp;
-    <span style="color:#06b6d4;font-weight:700;">- - EGL</span>
-    &nbsp;&nbsp;
-    <span style="color:#f59e0b;font-weight:700;">— Pipa transmisi</span>
+ <div class="legend-row">
+<svg width="320" height="24" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- HGL -->
+    <line x1="10" y1="12" x2="40" y2="12"
+          stroke="#ef4444"
+          stroke-width="2"/>
+    <text x="48" y="16"
+          font-size="12"
+          fill="#475569"
+          font-family="Arial">HGL</text>
+
+    <!-- EGL -->
+    <line x1="105" y1="12" x2="135" y2="12"
+          stroke="#06b6d4"
+          stroke-width="1.5"
+          stroke-dasharray="5,4"/>
+    <text x="143" y="16"
+          font-size="12"
+          fill="#475569"
+          font-family="Arial">EGL</text>
+
+    <!-- Pipa -->
+    <line x1="195" y1="12" x2="225" y2="12"
+          stroke="#f59e0b"
+          stroke-width="5"
+          stroke-linecap="round"/>
+    <text x="233" y="16"
+          font-size="12"
+          fill="#475569"
+          font-family="Arial">Pipa Transmisi</text>
+
+</svg>
 </div>
         <div class="sec">4. Matriks validasi perhitungan hidrolis</div>
         <table class="dt"><thead><tr><th>Objek jalur</th><th>Koef.</th><th>L (m)</th><th>V (m/s)</th><th>f Darcy</th><th>H-Major</th><th>El. HGL</th><th>Head sisa</th></tr></thead><tbody>${rRows}</tbody></table>
