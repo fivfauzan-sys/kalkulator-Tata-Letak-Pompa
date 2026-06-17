@@ -3,457 +3,406 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDA Engineering Hub - Jakarta Selatan</title>
+    <title>Sudin SDA Jakarta Selatan — Hydraulic Engineering Tools</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --navy: #0b1120;
-            --navy-mid: #162032;
-            --navy-light: #1e2d42;
-            --gold: #e9a83a;
-            --gold-light: #f5c86a;
-            --gold-dim: rgba(233, 168, 58, 0.12);
-            --text: #e2e8f0;
-            --text-muted: #7f8ea3;
-            --surface: #111827;
-            --border: rgba(255,255,255,0.06);
+            --navy: #0f172a;
+            --navy-mid: #1e293b;
+            --navy-light: #334155;
+            --slate: #64748b;
+            --slate-light: #94a3b8;
+            --border: #e2e8f0;
+            --border-subtle: #f1f5f9;
+            --bg: #f1f5f9;
+            --white: #ffffff;
+            --amber: #f59e0b;
+            --blue: #2563eb;
+            --green: #34d399;
+            --mono: 'JetBrains Mono', monospace;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--navy);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* LOGIN OVERLAY */
-        #login-overlay {
-            position: fixed; inset: 0;
-            background: var(--navy);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 10000;
-            transition: opacity 0.5s;
-        }
-
-        .login-card {
-            background: var(--navy-mid);
-            border: 1px solid rgba(233,168,58,0.25);
-            border-radius: 20px;
-            padding: 48px 40px;
-            width: 360px;
-            text-align: center;
-        }
-
-        .login-logo {
-            width: 56px; height: 56px;
-            background: var(--gold-dim);
-            border: 1px solid rgba(233,168,58,0.3);
-            border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 24px;
-        }
-
-        .login-card h3 {
-            font-size: 1.1rem; font-weight: 700;
-            color: #fff; margin-bottom: 6px;
-        }
-
-        .login-card p {
-            font-size: 0.8rem; color: var(--text-muted);
-            margin-bottom: 28px; line-height: 1.5;
-        }
-
-        .login-card input {
-            width: 100%; padding: 14px;
-            background: var(--navy-light);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            text-align: center; font-size: 1.6rem;
-            letter-spacing: 12px; color: #fff;
-            margin-bottom: 14px; outline: none;
-            transition: border-color 0.2s;
-            font-family: 'Inter', monospace;
-        }
-
-        .login-card input:focus {
-            border-color: var(--gold);
-        }
-
-        .btn-verify {
-            width: 100%; padding: 14px;
-            background: var(--gold);
+            background: var(--bg);
             color: var(--navy);
-            border: none; border-radius: 10px;
-            font-weight: 700; font-size: 0.85rem;
-            text-transform: uppercase; letter-spacing: 1px;
-            cursor: pointer; transition: background 0.2s;
-        }
-
-        .btn-verify:hover { background: var(--gold-light); }
-
-        #error-txt {
-            color: #f87171; font-size: 0.78rem;
-            font-weight: 600; margin-top: 10px;
-            display: none;
-        }
-
-        /* MAIN CONTENT */
-        #content-wrapper {
-            filter: blur(12px);
-            pointer-events: none;
-            transition: filter 0.8s;
             min-height: 100vh;
-            display: flex; flex-direction: column;
         }
-
-        /* TOPBAR */
-        .topbar {
+        /* ── LOGIN OVERLAY ── */
+        #login-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--navy);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+        .login-panel {
+            width: 340px;
             background: var(--navy-mid);
-            border-bottom: 1px solid var(--border);
-            padding: 0 32px;
-            height: 60px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-
-        .topbar-brand {
-            display: flex; align-items: center; gap: 12px;
-        }
-
-        .brand-icon {
-            width: 34px; height: 34px;
-            background: var(--gold-dim);
-            border: 1px solid rgba(233,168,58,0.3);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-        }
-
-        .brand-text {
-            font-size: 0.88rem; font-weight: 700;
-            color: #fff; letter-spacing: 0.3px;
-        }
-
-        .brand-sub {
-            font-size: 0.7rem; color: var(--gold);
-            font-weight: 500; margin-top: 1px;
-        }
-
-        .topbar-badge {
-            background: var(--gold-dim);
-            border: 1px solid rgba(233,168,58,0.25);
-            color: var(--gold);
-            padding: 5px 12px; border-radius: 20px;
-            font-size: 0.7rem; font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        /* HERO */
-        .hero {
-            padding: 64px 32px 48px;
+            border: 0.5px solid var(--navy-light);
+            border-top: 2px solid var(--amber);
+            border-radius: 12px;
+            padding: 36px 32px;
             text-align: center;
+        }
+        .login-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(245,158,11,0.1);
+            border: 0.5px solid rgba(245,158,11,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            font-size: 18px;
+        }
+        .login-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+        }
+        .login-sub {
+            font-size: 11px;
+            color: var(--slate);
+            margin-bottom: 24px;
+            font-family: var(--mono);
+            letter-spacing: 0.04em;
+        }
+        .login-divider {
+            height: 0.5px;
+            background: var(--navy-light);
+            margin-bottom: 20px;
+        }
+        .login-label {
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--slate-light);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+            margin-bottom: 10px;
+        }
+        /* Bagian Mata */
+        .input-container {
             position: relative;
-        }
-
-        .hero-eyebrow {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: var(--gold-dim);
-            border: 1px solid rgba(233,168,58,0.2);
-            border-radius: 20px;
-            padding: 5px 14px;
-            font-size: 0.72rem; font-weight: 600;
-            color: var(--gold); letter-spacing: 0.8px;
-            text-transform: uppercase; margin-bottom: 20px;
-        }
-
-        .hero h1 {
-            font-size: 2.4rem; font-weight: 800;
-            color: #fff; line-height: 1.2;
+            width: 100%;
             margin-bottom: 12px;
         }
-
-        .hero h1 span { color: var(--gold); }
-
-        .hero p {
-            font-size: 0.95rem; color: var(--text-muted);
-            max-width: 500px; margin: 0 auto;
-            line-height: 1.7;
+        .login-panel input {
+            width: 100%;
+            padding: 13px 40px 13px 13px;
+            background: var(--navy);
+            border: 0.5px solid var(--navy-light);
+            border-radius: 8px;
+            color: #f8fafc;
+            text-align: center;
+            font-size: 1.6rem;
+            letter-spacing: 12px;
+            font-family: var(--mono);
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s;
         }
-
-        /* DIVIDER LINE */
-        .divider {
-            width: 60px; height: 2px;
-            background: var(--gold);
-            margin: 20px auto;
-            border-radius: 2px;
-        }
-
-        /* CARDS GRID */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            max-width: 1080px;
-            margin: 0 auto 60px;
-            padding: 0 32px;
-        }
-
-        @media (max-width: 900px) {
-            .cards-grid { grid-template-columns: 1fr; max-width: 480px; }
-            .hero h1 { font-size: 1.8rem; }
-        }
-
-        .module-card {
-            background: var(--navy-mid);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 32px 28px;
-            display: flex; flex-direction: column;
+        .login-panel input:focus { border-color: var(--amber); }
+        .toggle-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
-            transition: border-color 0.3s, transform 0.3s;
-            position: relative; overflow: hidden;
+            color: #ffffff;
+            font-size: 18px;
+            display: block !important;
+            user-select: none;
         }
-
-        .module-card:not(.locked):hover {
-            border-color: rgba(233,168,58,0.35);
-            transform: translateY(-6px);
-        }
-
-        .module-card.locked {
-            opacity: 0.45;
-            cursor: not-allowed;
-        }
-
-        .card-accent {
-            position: absolute; top: 0; left: 0; right: 0;
-            height: 3px; border-radius: 18px 18px 0 0;
-            background: linear-gradient(90deg, var(--gold), transparent);
-        }
-
-        .card-locked-badge {
-            position: absolute; top: 14px; right: 14px;
-            background: #ef4444;
-            color: #fff; border-radius: 6px;
-            padding: 3px 8px; font-size: 0.65rem; font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .card-icon {
-            width: 52px; height: 52px;
-            background: var(--navy-light);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; margin-bottom: 20px;
-        }
-
-        .module-card:not(.locked):hover .card-icon {
-            background: var(--gold-dim);
-            border-color: rgba(233,168,58,0.3);
-        }
-
-        .card-tag {
-            font-size: 0.65rem; font-weight: 700;
-            color: var(--gold); letter-spacing: 1px;
-            text-transform: uppercase; margin-bottom: 8px;
-        }
-
-        .card-title {
-            font-size: 1.1rem; font-weight: 700;
-            color: #fff; margin-bottom: 10px; line-height: 1.3;
-        }
-
-        .card-desc {
-            font-size: 0.82rem; color: var(--text-muted);
-            line-height: 1.6; flex: 1; margin-bottom: 24px;
-        }
-
-        .card-btn {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 16px;
-            background: var(--navy-light);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 10px;
-            font-size: 0.78rem; font-weight: 700;
-            color: var(--text-muted);
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .module-card:not(.locked):hover .card-btn {
-            background: var(--gold);
-            border-color: var(--gold);
+        /* Akhir Bagian Mata */
+        .btn-verify {
+            width: 100%;
+            padding: 12px;
+            background: var(--amber);
             color: var(--navy);
+            border: none;
+            border-radius: 7px;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: var(--mono);
+            transition: opacity 0.2s;
         }
-
-        .card-btn span { letter-spacing: 0.5px; }
-
-        /* FOOTER */
-        footer {
-            margin-top: auto;
-            border-top: 1px solid var(--border);
-            padding: 24px 32px;
-            display: flex; align-items: center; justify-content: space-between;
-            flex-wrap: wrap; gap: 10px;
+        .btn-verify:hover { opacity: 0.88; }
+        #error-txt {
+            color: #f87171;
+            font-size: 10px;
+            margin-top: 10px;
+            display: none;
+            font-weight: 500;
+            font-family: var(--mono);
+            letter-spacing: 0.04em;
         }
-
-        .footer-left { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
-        .footer-left strong { color: var(--text); }
-
-        .footer-right {
-            font-size: 0.72rem; color: var(--text-muted);
-            background: var(--navy-mid);
-            border: 1px solid var(--border);
-            padding: 6px 12px; border-radius: 8px;
-        }
-
-        /* PORTAL */
-        #portal {
-            display: none; position: fixed; inset: 0;
-            background: #fff; z-index: 9999;
-        }
-
-        .btn-back {
-            position: fixed; bottom: 24px; left: 24px;
-            z-index: 10000;
-            background: var(--gold);
-            color: var(--navy);
-            padding: 12px 24px; border-radius: 40px;
-            font-weight: 700; font-size: 0.82rem;
-            border: none; cursor: pointer;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-            letter-spacing: 0.3px;
-        }
-
+        /* ── KODE LAINNYA TIDAK DIUBAH ── */
+        #content-wrapper { filter: blur(15px); pointer-events: none; transition: filter 0.8s ease; min-height: 100vh; display: flex; flex-direction: column; }
+        .topbar { background: var(--navy); height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; border-bottom: 1px solid var(--navy-mid); flex-shrink: 0; }
+        .tb-brand { display: flex; align-items: center; gap: 10px; }
+        .tb-pill { background: var(--amber); border-radius: 4px; padding: 3px 8px; font-size: 9px; font-weight: 700; color: var(--navy); font-family: var(--mono); letter-spacing: 0.05em; }
+        .tb-name { font-size: 12px; font-weight: 500; color: #e2e8f0; letter-spacing: 0.01em; }
+        .tb-right { display: flex; align-items: center; gap: 16px; }
+        .tb-unit { font-size: 10px; color: #475569; font-family: var(--mono); }
+        .tb-online { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--green); font-family: var(--mono); }
+        .online-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+        .hero { background: var(--navy); padding: 32px 28px 68px; flex-shrink: 0; }
+        .hero-inner { max-width: 1060px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 28px; }
+        .hero-kicker { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+        .kicker-line { width: 22px; height: 1.5px; background: var(--amber); border-radius: 2px; }
+        .kicker-text { font-size: 9px; font-weight: 500; color: var(--amber); letter-spacing: 0.15em; text-transform: uppercase; font-family: var(--mono); }
+        .hero h1 { font-size: 26px; font-weight: 500; color: #f8fafc; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 10px; }
+        .hero h1 em { font-style: normal; color: #93c5fd; }
+        .hero-p { font-size: 12px; color: #64748b; line-height: 1.6; max-width: 400px; }
+        .hero-tags { display: flex; gap: 6px; margin-top: 18px; flex-wrap: wrap; }
+        .htag { border: 0.5px solid #1e3a5f; border-radius: 3px; padding: 4px 9px; font-size: 9px; color: #60a5fa; font-family: var(--mono); letter-spacing: 0.04em; }
+        .hero-counters { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+        .hcount { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 18px; text-align: right; min-width: 88px; }
+        .hcount-n { font-size: 22px; font-weight: 500; color: #f8fafc; font-family: var(--mono); line-height: 1; }
+        .hcount-n.g { color: var(--green); }
+        .hcount-n.a { color: #fbbf24; }
+        .hcount-l { font-size: 9px; color: #475569; font-family: var(--mono); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
+        .main { max-width: 1060px; margin: -34px auto 40px; padding: 0 28px; flex: 1; }
+        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        @media (max-width: 860px) { .hero-inner { grid-template-columns: 1fr; } .hero-counters { flex-direction: row; } .cards-grid { grid-template-columns: 1fr; } .main { margin-top: 20px; } }
+        .mc { background: var(--white); border: 0.5px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s; }
+        .mc:hover:not(.locked) { border-color: #93c5fd; transform: translateY(-3px); }
+        .mc.locked { opacity: 0.5; filter: grayscale(0.5); cursor: not-allowed; }
+        .mc-accent { height: 2.5px; background: var(--border); }
+        .mc-accent.blue { background: var(--blue); }
+        .mc-accent.amber { background: var(--amber); }
+        .mc-head { padding: 16px 16px 10px; display: flex; align-items: flex-start; justify-content: space-between; }
+        .mc-icon-block { display: flex; flex-direction: column; gap: 8px; }
+        .mc-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; }
+        .ic-blue { background: #eff6ff; }
+        .ic-amber { background: #fffbeb; }
+        .ic-slate { background: #f8fafc; }
+        .mc-num { font-size: 9px; color: #cbd5e1; font-family: var(--mono); letter-spacing: 0.06em; }
+        .mc-badge { font-size: 9px; font-weight: 500; padding: 3px 8px; border-radius: 3px; font-family: var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+        .badge-on { background: #ecfdf5; color: #065f46; border: 0.5px solid #a7f3d0; }
+        .badge-off { background: #fef2f2; color: #991b1b; border: 0.5px solid #fecaca; }
+        .mc-body { padding: 0 16px 14px; flex: 1; }
+        .mc-cat { font-size: 9px; color: var(--slate-light); font-family: var(--mono); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+        .mc-title { font-size: 13.5px; font-weight: 500; color: var(--navy); line-height: 1.3; margin-bottom: 7px; }
+        .mc-desc { font-size: 11px; color: var(--slate); line-height: 1.65; }
+        .mc-specs { display: grid; grid-template-columns: 1fr 1fr; border-top: 0.5px solid var(--border-subtle); border-bottom: 0.5px solid var(--border-subtle); }
+        .sp { padding: 9px 14px; border-right: 0.5px solid var(--border-subtle); }
+        .sp:nth-child(even) { border-right: none; }
+        .sp-k { font-size: 8.5px; color: var(--slate-light); font-family: var(--mono); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; }
+        .sp-v { font-size: 11px; font-weight: 500; color: #1e293b; font-family: var(--mono); }
+        .mc-footer { padding: 12px 14px; }
+        .btn-mod { width: 100%; padding: 8px; border-radius: 6px; font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--mono); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: opacity 0.15s; }
+        .btn-dark { background: var(--navy); color: #fff; border: none; }
+        .btn-dark:hover { opacity: 0.85; }
+        .btn-mute { background: #f8fafc; color: var(--slate-light); border: 0.5px solid var(--border); cursor: not-allowed; }
+        footer { background: var(--white); border-top: 0.5px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .ft-left { font-size: 11px; color: var(--slate); }
+        .ft-left strong { font-weight: 500; color: var(--navy); }
+        .ft-right { font-size: 9px; color: var(--slate-light); font-family: var(--mono); letter-spacing: 0.06em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .ft-dot { width: 3px; height: 3px; border-radius: 50%; background: #cbd5e1; }
+        #portal { display: none; position: fixed; inset: 0; background: white; z-index: 9999; }
+        .btn-back { position: fixed; bottom: 24px; left: 24px; z-index: 10000; background: var(--navy); color: #f8fafc; padding: 10px 20px; border-radius: 7px; font-weight: 500; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; border: none; cursor: pointer; font-family: var(--mono); display: flex; align-items: center; gap: 7px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); transition: opacity 0.2s; }
+        .btn-back:hover { opacity: 0.85; }
         iframe { width: 100%; height: 100%; border: none; }
+        @media (max-width: 600px) { .topbar { padding: 0 16px; } .tb-unit { display: none; } .hero { padding: 24px 16px 56px; } .main { padding: 0 16px; } footer { padding: 14px 16px; flex-direction: column; gap: 6px; text-align: center; } }
     </style>
 </head>
 <body>
-
-<!-- LOGIN -->
 <div id="login-overlay">
-    <div class="login-card">
-        <div class="login-logo">🔐</div>
-        <h3>SDA Engineering Hub</h3>
-        <p>Masukkan kode verifikasi untuk mengakses dashboard sistem</p>
-        <input type="password" id="pass-field" maxlength="4" placeholder="• • • •" autocomplete="off">
-        <button class="btn-verify" onclick="verifikasi()">Masuk Dashboard</button>
-        <div id="error-txt">Kode verifikasi tidak valid</div>
+    <div class="login-panel">
+        <div class="login-icon">🛠️</div>
+        <div class="login-title">SDA Engineering Hub</div>
+        <div class="login-sub">Seksi Perencanaan</div>
+        <div class="login-divider"></div>
+        <p class="login-label">Kode Akses</p>
+        <div class="input-container">
+            <input type="password" id="pass-field" maxlength="4" placeholder="••••" autocomplete="off">
+            <span class="toggle-eye" onclick="togglePassword()">👁️</span>
+        </div>
+        <button class="btn-verify" onclick="verifikasi()">Masuk →</button>
+        <div id="error-txt">Kode tidak valid</div>
     </div>
 </div>
-
-<!-- MAIN -->
 <div id="content-wrapper">
-    <nav class="topbar">
-        <div class="topbar-brand">
-            <div class="brand-icon">💧</div>
-            <div>
-                <div class="brand-text">SDA Engineering Hub</div>
-                <div class="brand-sub">Sudin SDA Jakarta Selatan</div>
+    <div class="topbar">
+        <div class="tb-brand">
+            <div class="tb-pill">SDA</div>
+            <span class="tb-name">Engineering Hub</span>
+        </div>
+        <div class="tb-right">
+            <span class="tb-unit">Sudin SDA Jakarta Selatan · Seksi Perencanaan</span>
+            <div class="tb-online">
+                <div class="online-dot"></div>
+                <span>Online</span>
             </div>
         </div>
-        <div class="topbar-badge">Rentek_SDA_JS</div>
-    </nav>
-
+    </div>
     <div class="hero">
-        <div class="hero-eyebrow">
-            <span>●</span> Seksi Perencanaan — Suku Dinas Sumber Daya Air
+        <div class="hero-inner">
+            <div>
+                <div class="hero-kicker">
+                    <div class="kicker-line"></div>
+                    <span class="kicker-text">Seksi Perencanaan · Sudin SDA Jak-Sel</span>
+                </div>
+                <h1>Alat Bantu Teknis<br><em>Perencanaan Hidraulika</em></h1>
+                <p class="hero-p">Simulasi Pompa, Kalkulasi Jaringan Pipa,  dan Panduan Penggunaan Dashboard serta Rumus Dasar yang digunakan.</p>
+                <div class="hero-tags">
+                    <div class="htag">Hazen-Williams</div>
+                    <div class="htag">Darcy-Weisbach</div>
+                    <div class="htag">HGL / EGL</div>
+                    <div class="htag">v2.0 · 2026</div>
+                </div>
+            </div>
+            <div class="hero-counters">
+                <div class="hcount">
+                    <div class="hcount-n">3</div>
+                    <div class="hcount-l">Modul</div>
+                </div>
+                <div class="hcount">
+                    <div class="hcount-n g">2</div>
+                    <div class="hcount-l">Aktif</div>
+                </div>
+                <div class="hcount">
+                    <div class="hcount-n a">1</div>
+                    <div class="hcount-l">Pending</div>
+                </div>
+            </div>
         </div>
-        <h1>Dashboard <span>Mobile</span></h1>
-        <div class="divider"></div>
-        <p>Platform analisis teknis terpadu untuk perencanaan infrastruktur pengendalian banjir Kota Jakarta Selatan</p>
     </div>
-
-    <div class="cards-grid">
-
-        <div class="module-card locked" onclick="alert('Modul Pump Storage Simulator masih dalam tahap sinkronisasi data.')">
-            <div class="card-accent"></div>
-            <div class="card-locked-badge">🔒 LOCKED</div>
-            <div class="card-icon">📈</div>
-            <div class="card-tag">Modul 01</div>
-            <div class="card-title">Pump Storage Simulator</div>
-            <div class="card-desc">Analisis siklus operasional pompa dan monitoring TMA kolam olakan secara presisi.</div>
-            <div class="card-btn">
-                <span>Coming Soon</span>
-                <span>—</span>
+    <div class="main">
+        <div class="cards-grid">
+            <div class="mc locked" onclick="alert('Modul Pump Storage Simulator masih dalam tahap sinkronisasi data.')">
+                <div class="mc-accent"></div>
+                <div class="mc-head">
+                    <div class="mc-icon-block">
+                        <div class="mc-icon ic-slate">📈</div>
+                        <div class="mc-num">MOD-001</div>
+                    </div>
+                    <span class="mc-badge badge-off">Pending</span>
+                </div>
+                <div class="mc-body">
+                    <div class="mc-cat">Simulasi</div>
+                    <div class="mc-title">Pump Storage Simulator</div>
+                    <p class="mc-desc">Simulasi siklus operasional pompa dan pemantauan TMA kolam olakan berbasis data real-time.</p>
+                </div>
+                <div class="mc-specs">
+                    <div class="sp"><div class="sp-k">Status</div><div class="sp-v">Dev</div></div>
+                    <div class="sp"><div class="sp-k">Target</div><div class="sp-v">Q3 2026</div></div>
+                    <div class="sp"><div class="sp-k">Kategori</div><div class="sp-v">Simulasi</div></div>
+                    <div class="sp"><div class="sp-k">Versi</div><div class="sp-v">—</div></div>
+                </div>
+                <div class="mc-footer">
+                    <button class="btn-mod btn-mute">Belum Tersedia</button>
+                </div>
+            </div>
+            <div class="mc" onclick="bukaModul('pipe-energy.html')">
+                <div class="mc-accent blue"></div>
+                <div class="mc-head">
+                    <div class="mc-icon-block">
+                        <div class="mc-icon ic-blue">🧪</div>
+                        <div class="mc-num">MOD-002</div>
+                    </div>
+                    <span class="mc-badge badge-on">Aktif</span>
+                </div>
+                <div class="mc-body">
+                    <div class="mc-cat">Kalkulasi</div>
+                    <div class="mc-title">Pipe Energy Calculator</div>
+                    <p class="mc-desc">Perhitungan head loss, profil HGL/EGL, dan verifikasi kecepatan aliran per segmen pipa.</p>
+                </div>
+                <div class="mc-specs">
+                    <div class="sp"><div class="sp-k">Metode</div><div class="sp-v">H-W · D-W</div></div>
+                    <div class="sp"><div class="sp-k">Output</div><div class="sp-v">HGL/EGL</div></div>
+                    <div class="sp"><div class="sp-k">Segmen</div><div class="sp-v">Multi</div></div>
+                    <div class="sp"><div class="sp-k">Versi</div><div class="sp-v">2.1.0</div></div>
+                </div>
+                <div class="mc-footer">
+                    <button class="btn-mod btn-dark">Buka Kalkulator →</button>
+                </div>
+            </div>
+            <div class="mc" onclick="bukaModul('manual-instruction.html')">
+                <div class="mc-accent amber"></div>
+                <div class="mc-head">
+                    <div class="mc-icon-block">
+                        <div class="mc-icon ic-amber">📖</div>
+                        <div class="mc-num">MOD-003</div>
+                    </div>
+                    <span class="mc-badge badge-on">Aktif</span>
+                </div>
+                <div class="mc-body">
+                    <div class="mc-cat">Dokumentasi</div>
+                    <div class="mc-title">Panduan Penggunaan</div>
+                    <p class="mc-desc">Dokumentasi teknis, alur penggunaan modul, dan referensi parameter perhitungan hidraulika.</p>
+                </div>
+                <div class="mc-specs">
+                    <div class="sp"><div class="sp-k">Format</div><div class="sp-v">Interaktif</div></div>
+                    <div class="sp"><div class="sp-k">Bahasa</div><div class="sp-v">Indonesia</div></div>
+                    <div class="sp"><div class="sp-k">Kategori</div><div class="sp-v">Panduan</div></div>
+                    <div class="sp"><div class="sp-k">Versi</div><div class="sp-v">1.0.0</div></div>
+                </div>
+                <div class="mc-footer">
+                    <button class="btn-mod btn-dark">Buka Panduan →</button>
+                </div>
             </div>
         </div>
-
-        <div class="module-card" onclick="bukaModul('pipe-energy.html')">
-            <div class="card-accent"></div>
-            <div class="card-icon">🧪</div>
-            <div class="card-tag">Modul 02</div>
-            <div class="card-title">Pipe Energy Calculator</div>
-            <div class="card-desc">Penghitungan head loss, distribusi tekanan, dan verifikasi spesifikasi material pipa jaringan transmisi.</div>
-            <div class="card-btn">
-                <span>Buka Calculator</span>
-                <span>→</span>
-            </div>
-        </div>
-
-        <div class="module-card" onclick="bukaModul('manual-instruction.html')">
-            <div class="card-accent"></div>
-            <div class="card-icon">📖</div>
-            <div class="card-tag">Panduan</div>
-            <div class="card-title">Manual Instruction</div>
-            <div class="card-desc">Panduan teknis lengkap, flow penggunaan aplikasi, dan dokumentasi parameter hidrolika sistem.</div>
-            <div class="card-btn">
-                <span>Buka Panduan</span>
-                <span>→</span>
-            </div>
-        </div>
-
     </div>
-
     <footer>
-        <div class="footer-left">
-            <strong>for Latsar 2026</strong> · Fauzan Afif<br>
-            Seksi Perencanaan — Sudin Sumber Daya Air Jakarta Selatan
+        <div class="ft-left">
+            <strong>Fauzan Afif</strong> · Seksi Perencanaan, Sudin Sumber Daya Air Jakarta Selatan
         </div>
-        <div class="footer-right">v1.0 · 2026</div>
+        <div class="ft-right">
+            <span>Latsar CPNS</span>
+            <div class="ft-dot"></div>
+            <span>2026</span>
+        </div>
     </footer>
 </div>
-
-<!-- PORTAL -->
 <div id="portal">
-    <button class="btn-back" onclick="tutupModul()">← BACK</button>
+    <button class="btn-back" onclick="tutupModul()">← Kembali</button>
     <iframe id="app-frame" src=""></iframe>
 </div>
-
 <script>
     const KODE_RAHASIA = "9999";
-
+    function togglePassword() {
+        const input = document.getElementById('pass-field');
+        input.type = (input.type === "password") ? "text" : "password";
+    }
     function verifikasi() {
         const input = document.getElementById('pass-field').value;
         const overlay = document.getElementById('login-overlay');
         const content = document.getElementById('content-wrapper');
         const error = document.getElementById('error-txt');
-
-        if(input === KODE_RAHASIA) {
+        if (input === KODE_RAHASIA) {
             overlay.style.opacity = "0";
             setTimeout(() => {
                 overlay.style.display = "none";
                 content.style.filter = "none";
                 content.style.pointerEvents = "auto";
+                document.body.style.overflow = "auto";
             }, 500);
         } else {
             error.style.display = "block";
             document.getElementById('pass-field').value = "";
         }
     }
-
-    document.getElementById('pass-field').addEventListener("keyup", function(e) {
-        if (e.key === "Enter") verifikasi();
+    document.getElementById('pass-field').addEventListener("keyup", function(event) {
+        if (event.key === "Enter") { verifikasi(); }
     });
-
     function bukaModul(file) {
         document.getElementById('portal').style.display = 'block';
         document.getElementById('app-frame').src = file;
     }
-
     function tutupModul() {
         document.getElementById('portal').style.display = 'none';
         document.getElementById('app-frame').src = '';
@@ -461,4 +410,3 @@
 </script>
 </body>
 </html>
-
