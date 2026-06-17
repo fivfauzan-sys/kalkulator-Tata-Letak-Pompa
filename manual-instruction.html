@@ -1,218 +1,82 @@
-cat > /home/claude/manual-instruction.html << 'ENDOFFILE'
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manual Book - SDA Engineering Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --navy: #0b1120;
-            --navy-mid: #162032;
-            --navy-light: #1e2d42;
-            --gold: #e9a83a;
-            --gold-dim: rgba(233,168,58,0.1);
-            --text: #e2e8f0;
-            --text-muted: #7f8ea3;
-            --border: rgba(255,255,255,0.07);
-            --surface: rgba(255,255,255,0.04);
+            --navy: #0f172a;
+            --navy-mid: #1e293b;
+            --navy-light: #334155;
+            --slate: #64748b;
+            --slate-light: #94a3b8;
+            --border: #e2e8f0;
+            --border-subtle: #f1f5f9;
+            --bg: #f1f5f9;
+            --white: #ffffff;
+            --amber: #f59e0b;
+            --blue: #2563eb;
+            --green: #34d399;
+            --mono: 'JetBrains Mono', monospace;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--navy);
-            color: var(--text);
-            line-height: 1.7;
-            padding: 0 0 60px;
-        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--navy); line-height: 1.7; padding: 0 0 60px; }
 
         /* TOPBAR */
-        .topbar {
-            background: var(--navy-mid);
-            border-bottom: 1px solid var(--border);
-            padding: 0 40px;
-            height: 60px;
-            display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 100;
-        }
-
+        .topbar { background: var(--navy); height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; border-bottom: 1px solid var(--navy-mid); }
         .brand { display: flex; align-items: center; gap: 10px; }
-        .brand-icon {
-            width: 32px; height: 32px;
-            background: var(--gold-dim);
-            border: 1px solid rgba(233,168,58,0.3);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
-        }
-        .brand-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
-        .brand-sub { font-size: 0.68rem; color: var(--gold); }
-        .badge { background: var(--gold-dim); border: 1px solid rgba(233,168,58,0.2); color: var(--gold); padding: 4px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; }
+        .brand-icon { width: 24px; height: 24px; background: rgba(245,158,11,0.1); border: 0.5px solid rgba(245,158,11,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .brand-name { font-size: 11px; font-weight: 500; color: #e2e8f0; }
+        .brand-sub { font-size: 9px; color: var(--slate); font-family: var(--mono); }
+        .badge { background: var(--amber); border-radius: 4px; padding: 3px 8px; font-size: 9px; font-weight: 700; color: var(--navy); font-family: var(--mono); }
 
         /* HERO */
-        .hero {
-            background: var(--navy-mid);
-            border-bottom: 1px solid var(--border);
-            padding: 48px 40px 40px;
-        }
-
-        .hero-tag {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: var(--gold-dim);
-            border: 1px solid rgba(233,168,58,0.2);
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.68rem; font-weight: 700;
-            color: var(--gold); letter-spacing: 0.8px;
-            text-transform: uppercase; margin-bottom: 16px;
-        }
-
-        .hero h1 { font-size: 1.9rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
-        .hero p { font-size: 0.88rem; color: var(--text-muted); max-width: 520px; }
+        .hero { background: var(--navy); padding: 48px 28px 40px; border-bottom: 1px solid var(--navy-mid); }
+        .hero-inner { max-width: 860px; margin: 0 auto; }
+        .hero-tag { display: inline-flex; align-items: center; gap: 8px; border: 0.5px solid #1e3a5f; border-radius: 4px; padding: 4px 10px; font-size: 9px; color: #60a5fa; font-family: var(--mono); margin-bottom: 14px; text-transform: uppercase; }
+        .hero h1 { font-size: 24px; font-weight: 500; color: #f8fafc; margin-bottom: 8px; }
+        .hero p { font-size: 12px; color: #64748b; }
 
         /* CONTENT */
-        .content { max-width: 860px; margin: 0 auto; padding: 40px 40px 0; }
-
-        /* SECTION */
+        .content { max-width: 860px; margin: 0 auto; padding: 40px 28px 0; }
         .section { margin-bottom: 48px; }
+        .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+        .section-num { width: 30px; height: 30px; background: #f8fafc; border: 0.5px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--navy); }
+        .section-title { font-size: 14px; font-weight: 600; color: var(--navy); }
 
-        .section-header {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 24px; padding-bottom: 14px;
-            border-bottom: 1px solid var(--border);
-        }
+        /* FLOW */
+        .flow-wrap { position: relative; padding: 8px 0 8px 28px; margin: 24px 0; }
+        .flow-wrap::before { content: ''; position: absolute; left: 11px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+        .flow-item { position: relative; margin-bottom: 20px; }
+        .flow-item::before { content: ''; position: absolute; left: -17px; top: 8px; width: 8px; height: 8px; background: var(--amber); border-radius: 50%; border: 2px solid var(--bg); }
+        .flow-card { background: var(--white); border: 0.5px solid var(--border); border-radius: 8px; padding: 16px 20px; }
+        .flow-step { font-size: 9px; font-weight: 700; color: var(--amber); font-family: var(--mono); margin-bottom: 4px; }
+        .flow-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+        .flow-desc { font-size: 11px; color: var(--slate); }
 
-        .section-num {
-            width: 30px; height: 30px;
-            background: var(--gold-dim);
-            border: 1px solid rgba(233,168,58,0.25);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.78rem; font-weight: 800; color: var(--gold);
-            flex-shrink: 0;
-        }
-
-        .section-title { font-size: 1rem; font-weight: 700; color: #fff; }
-
-        p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 16px; }
-
-        /* FLOW TIMELINE */
-        .flow-wrap {
-            position: relative;
-            padding: 8px 0 8px 28px;
-            margin: 24px 0;
-        }
-
-        .flow-wrap::before {
-            content: '';
-            position: absolute; left: 11px; top: 0; bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, transparent, var(--gold), transparent);
-        }
-
-        .flow-item {
-            position: relative;
-            margin-bottom: 20px;
-            padding-left: 20px;
-        }
-
-        .flow-item::before {
-            content: '';
-            position: absolute; left: -17px; top: 14px;
-            width: 10px; height: 10px;
-            background: var(--gold);
-            border-radius: 50%;
-            border: 2px solid var(--navy);
-            box-shadow: 0 0 0 3px rgba(233,168,58,0.15);
-        }
-
-        .flow-card {
-            background: var(--navy-mid);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px 20px;
-            transition: border-color 0.2s;
-        }
-
-        .flow-card:hover { border-color: rgba(233,168,58,0.2); }
-
-        .flow-step { font-size: 0.65rem; font-weight: 800; color: var(--gold); letter-spacing: 1px; margin-bottom: 4px; }
-        .flow-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
-        .flow-desc { font-size: 0.8rem; color: var(--text-muted); }
-
-        /* MODULE BUTTONS */
+        /* MODULES & OTHERS */
         .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 24px; }
+        .mod-btn { padding: 12px; border-radius: 8px; border: 0.5px solid var(--border); background: var(--white); font-size: 11px; font-weight: 500; color: var(--navy); text-align: center; }
+        .mod-btn.green { border-color: var(--green); color: var(--green); background: #f0fdf4; }
 
-        .mod-btn {
-            padding: 16px 20px; border-radius: 12px;
-            border: 1px solid rgba(233,168,58,0.2);
-            background: var(--gold-dim);
-            font-size: 0.82rem; font-weight: 700; color: var(--gold);
-            text-align: center; cursor: default;
-        }
+        h3 { font-size: 13px; font-weight: 600; color: var(--navy); margin: 28px 0 10px; padding-left: 10px; border-left: 3px solid var(--amber); }
+        h4 { font-size: 11px; font-weight: 600; color: var(--slate); margin: 20px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        p { color: var(--slate); font-size: 12px; margin-bottom: 16px; }
+        ul { padding-left: 20px; margin-bottom: 16px; }
+        li { font-size: 12px; color: var(--slate); margin-bottom: 8px; }
+        li strong { color: var(--navy); }
 
-        .mod-btn.green { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.25); color: #34d399; }
+        .formula-box { background: var(--navy); border-radius: 8px; padding: 16px; font-family: var(--mono); font-size: 13px; color: var(--amber); text-align: center; margin: 16px 0; }
+        code { background: var(--border-subtle); padding: 2px 5px; border-radius: 4px; font-family: var(--mono); font-size: 11px; }
 
-        /* SUBSECTIONS */
-        h3 {
-            font-size: 0.9rem; font-weight: 700; color: #fff;
-            margin: 28px 0 10px;
-            padding-left: 10px;
-            border-left: 3px solid var(--gold);
-        }
-
-        h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin: 20px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        ul, ol { padding-left: 20px; margin-bottom: 16px; }
-        li { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.6; }
-        li strong { color: var(--text); }
-
-        /* FORMULA */
-        .formula-box {
-            background: var(--navy-mid);
-            border: 1px solid rgba(233,168,58,0.2);
-            border-left: 3px solid var(--gold);
-            border-radius: 10px;
-            padding: 16px 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem; font-weight: 700;
-            color: var(--gold);
-            text-align: center;
-            margin: 16px 0;
-        }
-
-        code {
-            background: var(--navy-light);
-            border: 1px solid var(--border);
-            padding: 2px 7px; border-radius: 5px;
-            font-family: monospace; font-size: 0.82rem;
-            color: var(--gold-light, #f5c86a);
-        }
-
-        /* TABLE */
-        .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: 12px; border: 1px solid var(--border); }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-        thead th {
-            background: var(--navy-light);
-            color: var(--text-muted);
-            padding: 12px 14px; text-align: left;
-            font-weight: 600; font-size: 0.75rem;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--border);
-        }
-        tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+        .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: 8px; border: 0.5px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        thead th { background: #f8fafc; color: var(--slate); padding: 12px; text-align: left; font-weight: 500; border-bottom: 0.5px solid var(--border); }
+        tbody td { padding: 12px; border-bottom: 0.5px solid var(--border); color: var(--navy); }
         tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover td { background: var(--surface); }
-        tbody td:first-child { color: var(--text); font-weight: 500; }
-
-        @media (max-width: 640px) {
-            .topbar, .hero, .content { padding-left: 20px; padding-right: 20px; }
-            .hero h1 { font-size: 1.4rem; }
-        }
     </style>
 </head>
 <body>
@@ -229,14 +93,14 @@ cat > /home/claude/manual-instruction.html << 'ENDOFFILE'
 </nav>
 
 <div class="hero">
-    <div class="hero-tag">📄 Dokumentasi Sistem</div>
-    <h1>Buku Panduan & Flow Penggunaan</h1>
-    <p>SDA Engineering Hub — Suku Dinas Sumber Daya Air Jakarta Selatan</p>
+    <div class="hero-inner">
+        <div class="hero-tag">📄 Dokumentasi Sistem</div>
+        <h1>Buku Panduan & Flow Penggunaan</h1>
+        <p>SDA Engineering Hub — Suku Dinas Sumber Daya Air Jakarta Selatan</p>
+    </div>
 </div>
 
 <div class="content">
-
-    <!-- SECTION 1 -->
     <div class="section">
         <div class="section-header">
             <div class="section-num">1</div>
@@ -278,15 +142,11 @@ cat > /home/claude/manual-instruction.html << 'ENDOFFILE'
             <div class="mod-btn">🚀 Pump Storage Simulator</div>
             <div class="mod-btn">⚙️ Pipe Energy Calculator</div>
         </div>
-    </div>
-            <div class="flow-item">
-                <div class="flow-card">
-                      <div class="mod-btn green">← Navigasi Kembali (BACK)</div>
-                </div>
-            </div>
+        <div class="module-grid">
+            <div class="mod-btn green">← Navigasi Kembali (BACK)</div>
         </div>
+    </div>
 
-    <!-- SECTION 2 -->
     <div class="section">
         <div class="section-header">
             <div class="section-num">2</div>
@@ -346,9 +206,7 @@ cat > /home/claude/manual-instruction.html << 'ENDOFFILE'
             </table>
         </div>
     </div>
-
 </div>
+
 </body>
 </html>
-ENDOFFILE
-echo "Done manual"
